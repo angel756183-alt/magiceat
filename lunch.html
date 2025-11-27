@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>餐點即將封印解除</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="午餐魔法師">
+  <link rel="manifest" href="data:application/manifest+json,{"name":"午餐魔法師","short_name":"吃啥","icons":[{"src":"magiceat-icon.png","sizes":"192x192","type":"image/png"},{"src":"magiceat-icon.png","sizes":"512x512","type":"image/png"}],"start_url":"lunch.html","display":"standalone","background_color":"#24006d","theme_color":"#8b3dff"}">
+  <link rel="apple-touch-icon" href="magiceat-icon.png">
+  <style>
+    body{margin:0;font-family:-apple-system;background:linear-gradient(135deg,#24006d,#1e0541);min-height:100dvh;display:flex;justify-content:center;align-items:center;color:#fff}
+    .c{background:rgba(255,255,255,0.97);border-radius:28px;box-shadow:0 25px 70px rgba(0,0,0,0.6);max-width:460px;width:90%;padding:40px 30px;text-align:center;overflow:hidden}
+    h1{font-size:2.2em;margin:0;background:linear-gradient(135deg,#ff9d6c,#bb86fc);-webkit-background-clip:text;color:transparent}
+    .dice{font-size:5.5em;margin:35px 0;animation:f 3s ease-in-out infinite}
+    @keyframes f{50%{transform:translateY(-20px)}}
+    button{background:linear-gradient(135deg,#8b3dff,#c05eff);color:#fff;border:none;padding:20px 40px;font-size:1.4em;border-radius:50px;cursor:pointer;width:100%;margin:15px 0;box-shadow:0 12px 35px rgba(139,61,255,.5)}
+    button:active{transform:scale(.95)}
+    .r{display:none;margin-top:30px;animation:s .6s}.r.show{display:block}
+    @keyframes s{from{opacity:0;transform:translateY(-30px)}}
+    .b{background:linear-gradient(135deg,#d4bbff,#b28ffe);padding:22px;border-radius:22px;margin:15px 0;box-shadow:0 8px 25px rgba(139,61,255,.3)}
+    .n{font-size:1.9em;font-weight:bold;color:#4a148c}
+    .a{font-size:1.05em;color:#6a1b9a;margin:8px 0;word-break:break-all}
+    .p{font-size:1.6em;color:#8b3dff;font-weight:bold}
+    .t{background:linear-gradient(135deg,#7e57c2,#512da8);color:#fff;padding:25px;border-radius:22px;margin-top:25px;font-size:2.4em;font-weight:bold}
+    .g{margin-top:25px;display:grid;gap:12px}
+    .g button{font-size:1.1em;padding:16px;border-radius:18px}
+    .g button:nth-child(3),.g button:nth-child(4){background:#512da8}
+    .s{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+    .s div{position:absolute;width:7px;height:7px;background:#e0d9ff;border-radius:50%;opacity:0;animation:k 2.2s infinite}
+    @keyframes k{50%{opacity:1;transform:scale(1)}}
+  </style>
+</head>
+<body>
+  <div class="s" id="s"></div>
+  <div class="c">
+    <h1>餐點即將封印解除</h1>
+    <p style="margin:10px 0 0;font-size:1.1em;color:#bbb">讓魔法師幫你決定今天吃什麼</p>
+    <div class="dice">Sparkles</div>
+    <button onclick="go()">解除封印</button>
+
+    <div class="r" id="r">
+      <div class="b"><h3>午餐</h3>
+        <div class="n" id="ln"></div>
+        <div class="a" id="la"></div>
+        <div class="p">$<span id="lp"></span></div>
+      </div>
+      <div class="b"><h3>飲料</h3>
+        <div class="n" id="dn"></div>
+        <div id="detail" style="color:#8b3dff;margin:10px 0;font-weight:bold"></div>
+        <div class="a" id="da"></div>
+        <div class="p">$<span id="dp"></span></div>
+      </div>
+      <div class="t">$<span id="total">0</span></div>
+      <div class="g">
+        <button onclick="copy()">複製結果</button>
+        <button style="background:#fff;color:#8b3dff;border:3px solid #8b3dff" onclick="go()">再一次</button>
+        <button onclick="nav(1)">導航午餐</button>
+        <button onclick="nav(2)">導航飲料</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const L=[{n:"好口味",p:80,a:"台南市新市區中興路136號"},{n:"粥全",p:75,a:"台南市善化區中山路177號"},{n:"小公園擔仔麵",p:60,a:"台南市中西區西門路二段321號"},{n:"葉家小卷米粉",p:70,a:"台南市中西區國華街三段142號"},{n:"文章牛肉湯",p:180,a:"台南市安平區安北路148號"}];
+const D=[{n:"可不可",p:45,a:"台南市新市區中正路194號"},{n:"萬波",p:45,a:"台南市善化區大成路188號"},{n:"麻古",p:50,a:"台南市新市區中正路194號"}];
+const sugar=["正常糖","少糖","半糖","微糖","無糖"],ice=["正常冰","少冰","微冰","去冰","熱"];
+let cur=null;
+for(let i=0;i<30;i++){let x=document.createElement('div');x.style.left=Math.random()*100+'%';x.style.top=Math.random()*100+'%';x.style.animationDelay=Math.random()*2+'s';document.getElementById('s').appendChild(x);}
+function go(){
+  const l=L[Math.floor(Math.random()*L.length)],d=D[Math.random()*D.length|0];
+  cur={l,d,s:sugar[Math.random()*sugar.length|0],i:ice[Math.random()*ice.length|0]};
+  document.getElementById('ln').textContent=l.n;
+  document.getElementById('la').textContent=l.a;
+  document.getElementById('lp').textContent=l.p;
+  document.getElementById('dn').textContent=d.n;
+  document.getElementById('detail').textContent=cur.s+' · '+cur.i;
+  document.getElementById('da').textContent=d.a;
+  document.getElementById('dp').textContent=d.p;
+  document.getElementById('total').textContent=(l.p+d.p);
+  const r=document.getElementById('r');r.classList.remove('show');setTimeout(()=>r.classList.add('show'),10);
+  document.querySelector('.dice').textContent='Sparkles';
+}
+function nav(t){window.open('https://maps.google.com/?q='+encodeURIComponent(t===1?cur.l.a:cur.d.a));}
+function copy(){
+  const txt=`餐點即將封印解除 ✨\n\n午餐：${cur.l.n}\n${cur.l.a}\n$${cur.l.p}\n\n飲料：${cur.d.n} (${cur.s}・${cur.i})\n${cur.d.a}\n$${cur.d.p}\n\n總計：$${(cur.l.p+cur.d.p)}`;
+  navigator.clipboard?.writeText(txt).then(()=>alert('已複製到剪貼簿！'))||((ta=document.createElement('textarea')).value=txt,document.body.appendChild(ta),ta.select(),document.execCommand('copy'),ta.remove(),alert('已複製！'));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>午餐魔法師</title>
+  
+  <!-- iPhone 主畫面安裝必備（含自定義圖示）-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="午餐魔法師">
+  <meta name="theme-color" content="#8b3dff">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/angel756183-alt/magiceat/main/magiceat-icon.png">
+
+  <!-- 內嵌 manifest（單檔最穩）-->
+  <link rel="manifest" href="data:application/manifest+json,{
+    \"name\": \"午餐魔法師\",
+    \"short_name\": \"吃啥\",
+    \"start_url\": \".\",
+    \"display\": \"standalone\",
+    \"background_color\": \"#24006d\",
+    \"theme_color\": \"#8b3dff\",
+    \"icons\": [{
+      \"src\": \"https://raw.githubusercontent.com/angel756183-alt/magiceat/main/magiceat-icon.png\",
+      \"sizes\": \"192x192\",
+      \"type\": \"image/png\"
+    }]
+  }">
+
+  <style>
+    body{margin:0;font-family:-apple-system;background:linear-gradient(135deg,#24006d,#1e0541);min-height:100dvh;color:#fff;overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:20px 0}
+    .c{background:rgba(255,255,255,0.97);border-radius:32px;box-shadow:0 30px 80px rgba(0,0,0,0.7);max-width:480px;width:92%;margin:0 auto;padding:50px 35px 80px;text-align:center;position:relative;overflow:visible}
+    h1{font-size:2.5em;margin:0 0 8px;background:linear-gradient(135deg,#ff9d6c,#bb86fc);-webkit-background-clip:text;color:transparent;font-weight:900}
+    .subtitle{font-size:1.2em;color:#888;margin-bottom:30px}
+
+    /* 夢幻按鈕 + 點擊小精靈飛出特效 */
+    .area-buttons{margin:40px 0 20px;display:flex;flex-direction:column;gap:25px;position:relative;overflow:hidden}
+    .area-btn{
+      padding:24px;font-size:1.5em;font-weight:bold;border-radius:28px;border:none;cursor:pointer;
+      background:linear-gradient(135deg,#8b5cf6,#c084fc);
+      color:#fff;box-shadow:0 15px 35px rgba(139,61,255,0.4);
+      position:relative;overflow:hidden;transform:translateY(0);transition:all .4s;
+    }
+    .area-btn:active{transform:scale(0.95)}
+    .area-btn.active{
+      background:linear-gradient(135deg,#a78bfa,#e0aaff);
+      box-shadow:0 20px 50px rgba(167,139,250,0.6);
+      transform:scale(1.05);
+    }
+
+    /* 小精靈飛出特效 */
+    .fairy{
+      position:absolute;width:50px;height:50px;pointer-events:none;
+      background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="14" fill="%23fff"/><circle cx="28" cy="28" r="6" fill="%23000"/><circle cx="36" cy="28" r="6" fill="%23000"/><path d="M32 40c-8 0-12 6-12 6s4-6 12-6 12 6 12 6-4-6-12-6z" fill="%23ff6bc4"/><path d="M20 20 l-10-10 m34 0 l10-10 m-34 44 l-10 10 m34 0 l10 10" stroke="%23fff" stroke-width="4"/></svg>') center/contain no-repeat;
+      opacity:0;z-index:10;animation:fairyFly 1.2s forwards;
+    }
+    @keyframes fairyFly{
+      0%{transform:translateY(0) scale(0);opacity:0}
+      50%{opacity:1;transform:translateY(-80px) scale(1) rotate(20deg)}
+      100%{opacity:0;transform:translateY(-180px) scale(0.8) rotate(-30deg)}
+    }
+
+    .dice{display:block;max-width:180px;margin:30px auto;animation:f 3s ease-in-out infinite}
+    @keyframes f{50%{transform:translateY(-25px)}}
+
+    button.main-btn{background:linear-gradient(135deg,#ff6b6b,#ffa500);color:#fff;border:none;padding:22px;font-size:1.6em;border-radius:50px;cursor:pointer;width:100%;margin:20px 0;box-shadow:0 15px 40px rgba(255,107,107,0.5);font-weight:bold}
+    button.main-btn:active{transform:scale(.96)}
+
+    .r{display:none;margin-top:30px;animation:s .6s}.r.show{display:block}
+    @keyframes s{from{opacity:0;transform:translateY(30px)}}
+
+    .b{background:linear-gradient(135deg,#e6d9ff,#c8b3ff);padding:28px;border-radius:28px;margin:20px 0;box-shadow:0 12px 35px rgba(139,61,255,.3)}
+    .n{font-size:2.3em;font-weight:bold;color:#4a148c;margin-bottom:10px}
+    .p{font-size:2em;color:#8b3dff;font-weight:bold;margin-top:12px}
+    .t{background:linear-gradient(135deg,#7e57c2,#512da8);color:#fff;padding:32px;border-radius:28px;margin-top:35px;font-size:3em;font-weight:bold}
+    .g{margin-top:35px;display:grid;gap:18px}
+    .g button{font-size:1.3em;padding:20px;border-radius:24px;border:none;cursor:pointer;font-weight:bold}
+
+    .s{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+    .s div{position:absolute;width:8px;height:8px;background:#e0d9ff;border-radius:50%;opacity:0;animation:k 2.5s infinite}
+    @keyframes k{50%{opacity:1;transform:scale(1.5)}}
+  </style>
+</head>
+<body>
+  <div class="s" id="s"></div>
+  <div class="c">
+    <h1>餐點即將封印解除</h1>
+    <p class="subtitle">讓魔法師幫你決定今天吃什麼</p>
+
+    <div class="area-buttons" id="areaButtons">
+      <button class="area-btn active" onclick="setArea('local', this)">前往善化新市區施展魔法</button>
+      <button class="area-btn" onclick="setArea('other', this)">前往其他區域冒險</button>
+    </div>
+
+    <img class="dice" src="https://raw.githubusercontent.com/angel756183-alt/magiceat/main/magiceat-icon.png" alt="魔法陣">
+
+    <button class="main-btn" onclick="go()">解除封印</button>
+
+    <div class="r" id="r">
+      <div class="b"><h3>午餐</h3>
+        <div class="n" id="ln"></div>
+        <div class="p">$<span id="lp"></span></div>
+      </div>
+      <div class="b"><h3>飲料</h3>
+        <div class="n" id="dn"></div>
+        <div class="p">$<span id="dp"></span></div>
+      </div>
+      <div class="t">$<span id="total">0</span></div>
+      <div class="g">
+        <button onclick="copy()">複製結果</button>
+        <button style="background:#fff;color:#8b3dff;border:4px solid #8b3dff" onclick="go()">再一次</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// 背景星星
+for(let i=0;i<35;i++){
+  let s=document.createElement('div');
+  s.style.left=Math.random()*100+'%';
+  s.style.top=Math.random()*100+'%';
+  s.style.animationDelay=Math.random()*2.5+'s';
+  document.getElementById('s').appendChild(s);
+}
+
+// 點擊按鈕放小精靈
+function setArea(area, btn) {
+  currentArea = area;
+  document.querySelectorAll('.area-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('r').classList.remove('show');
+
+  // 放小精靈！
+  const rect = btn.getBoundingClientRect();
+  const fairy = document.createElement('div');
+  fairy.className = 'fairy';
+  fairy.style.left = (rect.left + rect.width/2 - 25) + 'px';
+  fairy.style.top = (rect.top + rect.height/2 - 25) + 'px';
+  document.body.appendChild(fairy);
+  setTimeout(() => fairy.remove(), 1300);
+}
+
+// 店家資料（已刪除地址）
+const localFood = [{name:'好口味粥',price:80},{name:'粥全',price:75},{name:'麵兒見',price:85},{name:'八方雲集',price:70},{name:'必勝客',price:150},{name:'麥當勞',price:120},{name:'肯德基',price:130},{name:'梁社漢便當',price:85},{name:'港口土魠魚羹',price:90},{name:'丹丹漢堡',price:85},{name:'玉禾田越南料理',price:100},{name:'元爵味黃燜雞',price:95},{name:'新市成功牛排',price:150},{name:'小平 正宗火雞肉飯',price:70},{name:'藝鍋物',price:200},{name:'九鼎林豐',price:120},{name:'大埔鐵板燒',price:150},{name:'漢堡王',price:120},{name:'達美樂',price:180},{name:'阿珠姨滷肉飯',price:60},{name:'八方緣',price:80},{name:'老泉城黃燜雞米飯',price:95},{name:'皇聖食堂',price:85},{name:'麻小二',price:90}];
+
+const localDrink = [{name:'可不可',price:45},{name:'龜記',price:35},{name:'迷克夏',price:40},{name:'紅茶巴士',price:30},{name:'春芳號',price:40},{name:'萬波',price:45},{name:'青山',price:50},{name:'鶴茶樓',price:45},{name:'春宅',price:40},{name:'烏弄',price:45},{name:'五桐號',price:40},{name:'雙十八木',price:50},{name:'一沐日',price:45},{name:'得正',price:35},{name:'茶湯會',price:40},{name:'大茗',price:35},{name:'先喝道',price:40},{name:'水雲朵',price:45},{name:'老賴',price:35},{name:'Tea Top第一味',price:35},{name:'鮮茶道',price:35},{name:'角鋪',price:40},{name:'水巷茶弄',price:40},{name:'麻古',price:50},{name:'三分春色',price:45},{name:'慕春職人',price:45},{name:'米里米里',price:40},{name:'穆納',price:45},{name:'御私藏',price:40},{name:'coco都可',price:35},{name:'銀兩',price:45},{name:'幕和茶屋',price:50},{name:'Nanafru',price:55},{name:'紅太陽',price:30},{name:'白巷子',price:45},{name:'鮮自然',price:35}];
+
+const otherFood = [{name:'王品牛排',price:1200},{name:'陶板屋',price:600},{name:'西堤牛排',price:800},{name:'夏慕尼',price:900},{name:'石二鍋',price:350},{name:'藏壽司',price:200},{name:'壽司郎',price:180},{name:'丸龜製麵',price:150},{name:'阿憨鹹粥',price:100},{name:'文章牛肉湯',price:180},{name:'阿村牛肉湯',price:150},{name:'周氏蝦卷',price:120},{name:'富盛號碗粿',price:50},{name:'葉家小卷米粉',price:70},{name:'同記安平豆花',price:50},{name:'蜷尾家甜點',price:100},{name:'矮仔成蝦仁飯',price:80},{name:'集品蝦仁飯',price:80},{name:'福記肉圓',price:50},{name:'阿明豬心',price:150},{name:'阿龍香腸熟肉',price:60},{name:'莉莉水果店',price:120}];
+
+const otherDrink = [{name:'蜷尾家冰茶',price:60},{name:'春芳號',price:40},{name:'青蛙黑蛋奶',price:60},{name:'杜芳子古味茶鋪',price:100},{name:'南泉冰菓室',price:40},{name:'椿之味',price:60},{name:'白巷子',price:45},{name:'總裁點點頭',price:50},{name:'無飲',price:55},{name:'鮮自然',price:40},{name:'久御賞理想',price:45},{name:'波哥茶飲',price:35},{name:'宣福居',price:50},{name:'茶來茶去',price:30},{name:'茶的魔手',price:45},{name:'藏壽司飲料',price:40},{name:'壽司郎飲料',price:35},{name:'丸龜製麵飲料',price:30},{name:'雙全紅茶',price:40},{name:'青山茶行',price:50},{name:'藥師紅茶',price:45},{name:'仙豆龍Q奶',price:60},{name:'毛豆Q粿',price:35},{name:'糯夫米糕梅子綠',price:50}];
+
+let currentArea = 'local', cur = null;
+
+function go(){
+  const foodList = currentArea==='local'?localFood:otherFood;
+  const drinkList = currentArea==='local'?localDrink:otherDrink;
+  const l = foodList[Math.floor(Math.random()*foodList.length)];
+  const d = drinkList[Math.floor(Math.random()*drinkList.length)];
+  cur = {l,d};
+  document.getElementById('ln').textContent = l.name;
+  document.getElementById('lp').textContent = l.price;
+  document.getElementById('dn').textContent = d.name;
+  document.getElementById('dp').textContent = d.price;
+  document.getElementById('total').textContent = l.price + d.price;
+  const r = document.getElementById('r');
+  r.classList.remove('show');
+  setTimeout(()=>r.classList.add('show'),50);
+}
+
+function copy(){
+  const areaName = currentArea==='local'?'善化新市區':'其他區域';
+  const txt = `餐點即將封印解除\n\n【${areaName}】\n午餐：${cur.l.name} $${cur.l.price}\n飲料：${cur.d.name} $${cur.d.price}\n\n總計：$${cur.l.price + cur.d.price}`;
+  navigator.clipboard?.writeText(txt).then(()=>alert('已複製！'))||prompt('按 Ctrl+C 複製',txt);
+}
+</script>
+</body>
+</html>

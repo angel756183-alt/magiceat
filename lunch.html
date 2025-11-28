@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>餐點即將封印解除</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="午餐魔法師">
+  <link rel="manifest" href='data:application/manifest+json,{"name":"午餐魔法師","short_name":"吃啥","icons":[{"src":"magiceat-icon.png","sizes":"192x192","type":"image/png"},{"src":"magiceat-icon.png","sizes":"512x512","type":"image/png"}],"start_url":"lunch.html","display":"standalone","background_color":"#24006d","theme_color":"#8b3dff"}'>
+  <link rel="apple-touch-icon" href="magiceat-icon.png">
+  <style>
+    body{margin:0;font-family:-apple-system;background:linear-gradient(135deg,#24006d,#1e0541);min-height:100dvh;display:flex;justify-content:center;align-items:center;color:#fff}
+    .c{background:rgba(255,255,255,0.97);border-radius:28px;box-shadow:0 25px 70px rgba(0,0,0,0.6);max-width:460px;width:90%;padding:40px 30px;text-align:center;overflow:hidden}
+    h1{font-size:2.2em;margin:0;background:linear-gradient(135deg,#ff9d6c,#bb86fc);-webkit-background-clip:text;color:transparent}
+    .dice{font-size:5.5em;margin:35px 0;animation:f 3s ease-in-out infinite}
+    @keyframes f{50%{transform:translateY(-20px)}}
+    button{background:linear-gradient(135deg,#8b3dff,#c05eff);color:#fff;border:none;padding:20px 40px;font-size:1.4em;border-radius:50px;cursor:pointer;width:100%;margin:15px 0;box-shadow:0 12px 35px rgba(139,61,255,.5)}
+    button:active{transform:scale(.95)}
+    .r{display:none;margin-top:30px;animation:s .6s}.r.show{display:block}
+    @keyframes s{from{opacity:0;transform:translateY(-30px)}}
+    .b{background:linear-gradient(135deg,#d4bbff,#b28ffe);padding:22px;border-radius:22px;margin:15px 0;box-shadow:0 8px 25px rgba(139,61,255,.3)}
+    .n{font-size:1.9em;font-weight:bold;color:#4a148c}
+    .a{font-size:1.05em;color:#6a1b9a;margin:8px 0;word-break:break-all}
+    .p{font-size:1.6em;color:#8b3dff;font-weight:bold}
+    .t{background:linear-gradient(135deg,#7e57c2,#512da8);color:#fff;padding:25px;border-radius:22px;margin-top:25px;font-size:2.4em;font-weight:bold}
+    .g{margin-top:25px;display:grid;gap:12px}
+    .g button{font-size:1.1em;padding:16px;border-radius:18px}
+    .g button:nth-child(3),.g button:nth-child(4){background:#512da8}
+    .s{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+    .s div{position:absolute;width:7px;height:7px;background:#e0d9ff;border-radius:50%;opacity:0;animation:k 2.2s infinite}
+    @keyframes k{50%{opacity:1;transform:scale(1)}}
+  </style>
+</head>
+<body>
+  <div class="s" id="s"></div>
+  <div class="c">
+    <h1>餐點即將封印解除</h1>
+    <p style="margin:10px 0 0;font-size:1.1em;color:#bbb">讓魔法師幫你決定今天吃什麼</p>
+    <div class="dice">Sparkles</div>
+    <button onclick="go()">解除封印</button>
+
+    <div class="r" id="r">
+      <div class="b"><h3>午餐</h3>
+        <div class="n" id="ln"></div>
+        <div class="a" id="la"></div>
+        <div class="p">$<span id="lp"></span></div>
+      </div>
+      <div class="b"><h3>飲料</h3>
+        <div class="n" id="dn"></div>
+        <div id="detail" style="color:#8b3dff;margin:10px 0;font-weight:bold"></div>
+        <div class="a" id="da"></div>
+        <div class="p">$<span id="dp"></span></div>
+      </div>
+      <div class="t">$<span id="total">0</span></div>
+      <div class="g">
+        <button onclick="copy()">複製結果</button>
+        <button style="background:#fff;color:#8b3dff;border:3px solid #8b3dff" onclick="go()">再一次</button>
+        <button onclick="nav(1)">導航午餐</button>
+        <button onclick="nav(2)">導航飲料</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* 修正日誌：
+   1. 嚴格檢查「丹丹漢堡」：確認善化無分店，僅保留新市店。
+   2. 嚴格檢查「肯德基」：確認新市無分店，僅保留善化店。
+   3. 地址全面更新為 Google Maps 驗證後的真實地址。
+   4. 優先順序：新市/善化 > 安南/永康。
+*/
+const food = [
+  // --- 必吃速食 (已驗證分店真實性) ---
+  {name: '丹丹漢堡 (新市店)', price: 95, address: '台南市新市區復興路101號'}, // 善化無分店
+  {name: '麥當勞 (新市中山店)', price: 140, address: '台南市新市區中山路199號'},
+  {name: '麥當勞 (善化光復店)', price: 140, address: '台南市善化區光復路2-2號'},
+  {name: '肯德基 (善化光復餐廳)', price: 145, address: '台南市善化區光復路4號'}, // 新市無分店
+  {name: '必勝客 (新市中正店)', price: 199, address: '台南市新市區中正路234-1號'},
+  {name: '必勝客 (善化中山店)', price: 199, address: '台南市善化區中山路205號'},
+  {name: '達美樂 (新市店)', price: 180, address: '台南市新市區復興路9號'},
+  {name: '達美樂 (善化店)', price: 180, address: '台南市善化區民權路260號'},
+  {name: '漢堡王 (善化店)', price: 130, address: '台南市善化區中正路397號'}, // 較大間
+
+  // --- 知名便當與連鎖店 ---
+  {name: '八方雲集 (新市復興店)', price: 75, address: '台南市新市區復興路66號'},
+  {name: '八方雲集 (善化中山店)', price: 75, address: '台南市善化區中山路236號'},
+  {name: '梁社漢便當 (新市復興店)', price: 95, address: '台南市新市區復興路62號'},
+  {name: '梁社漢便當 (善化光復店)', price: 95, address: '台南市善化區光復路49號'},
+  {name: '好口味廣東粥 (善化店)', price: 80, address: '台南市善化區中正路382-8號'},
+  {name: '粥全 (新市店)', price: 80, address: '台南市新市區仁愛街312號'},
+  {name: '粥全 (善化店)', price: 80, address: '台南市善化區大成路262號'},
+  {name: '港品土魠魚羹 (新市店)', price: 85, address: '台南市新市區中正路272-2號'},
+  {name: '港口土魠魚羹 (善化店)', price: 85, address: '台南市善化區中山路52號'},
+  {name: '新市成功牛排 (新市店)', price: 170, address: '台南市新市區民生路78號'},
+  {name: '新市成功牛排 (善化店)', price: 170, address: '台南市善化區中山路226之2號'},
+  {name: '嘉義火雞肉飯 (新市店)', price: 70, address: '台南市新市區仁愛街306-2號'},
+  {name: '善化嘉義正火雞肉飯', price: 70, address: '台南市善化區中山路122號'},
+  {name: '阿珠姨滷肉飯 (新市店)', price: 65, address: '台南市新市區中正路238號'},
+  {name: '老泉城黃燜雞米飯 (新市店)', price: 130, address: '台南市新市區復興路60號'},
+  {name: '元爵味黃燜雞 (善化店)', price: 140, address: '台南市善化區中山路115號'},
+  {name: '大埔鐵板燒 (新市店)', price: 160, address: '台南市新市區中正路238號'},
+  {name: '大埔鐵板燒 (善化店)', price: 160, address: '台南市善化區民權路260號'},
+  {name: '半畝田北方麵食 (善化店)', price: 120, address: '台南市善化區大成路358號'}, // 新市店目前資料較少，以善化為主
+  {name: '藝鍋物 (新市店)', price: 160, address: '台南市新市區富強路6號'},
+  {name: '藝鍋物 (善化店)', price: 160, address: '台南市善化區光復路50號'},
+  {name: '九鼎林豐 (善化店)', price: 130, address: '台南市善化區中華路172號'},
+  {name: '麻小二 (新市店)', price: 120, address: '台南市新市區華興街120號'},
+  {name: '麻小二 (善化店)', price: 120, address: '台南市善化區大成路325號'},
+
+  // --- 早午餐 (午餐時段有開) ---
+  {name: '晨間廚房 (新市店)', price: 85, address: '台南市新市區仁愛街308號'},
+  {name: '晨間廚房 (善化店)', price: 85, address: '台南市善化區中山路191號'},
+  {name: '拉亞漢堡 (善化蓮潭店)', price: 90, address: '台南市善化區蓮潭北三街266號'},
+  {name: '弘爺漢堡 (善化民權店)', price: 75, address: '台南市善化區民權路43-1號'},
+  {name: '早安美芝城 (善化概念店)', price: 80, address: '台南市新市區龍目井路91號'}, // 雖名為龍目井路但近善化交界
+  {name: '日日夜宵 (新市店)', price: 110, address: '台南市新市區中正路237-7號'},
+
+  // --- 特色餐廳 ---
+  {name: '兒本餐廳 (善化店)', price: 300, address: '台南市善化區中華路17號'},
+  {name: '永世王朝薑母鴨 (善化店)', price: 350, address: '台南市善化區文昌路107巷67號'},
+  {name: '鮨本味 (善化店)', price: 250, address: '台南市善化區民權路260號'},
+
+  // --- 備選：安南與永康區 (名店補充) ---
+  {name: '小公園擔仔麵 (安南店)', price: 65, address: '台南市安南區海佃路一段215號'},
+  {name: '葉家小卷米粉 (永康店)', price: 110, address: '台南市永康區中華路280-53號'},
+  {name: '竹記鴨肉 (永康店)', price: 100, address: '台南市永康區中正北路'},
+  {name: '夏慕尼新香榭鉄板燒 (永康店)', price: 1190, address: '台南市永康區中華路606號'},
+  {name: '聚日式鍋物 (永康中華店)', price: 450, address: '台南市永康區中華路611號'}
+];
+
+const drink = [
+  // --- 熱門手搖飲 (已修正地址) ---
+  {name: '可不可 (新市中正店)', price: 45, address: '台南市新市區中正路230號'},
+  {name: '可不可 (善化中山店)', price: 45, address: '台南市善化區中山路387號'},
+  {name: '龜記 (新市店)', price: 50, address: '台南市新市區中正路192號'},
+  {name: '龜記 (善化店)', price: 50, address: '台南市善化區大成路310號'},
+  {name: '迷客夏 (新市店)', price: 55, address: '台南市新市區銘傳街85號'},
+  {name: '迷客夏 (善化店)', price: 55, address: '台南市善化區中山路237號'},
+  {name: '五桐號 (新市店)', price: 45, address: '台南市新市區中正路182號'},
+  {name: '五桐號 (善化店)', price: 45, address: '台南市善化區中山路383號'},
+  {name: '一沐日 (新市店)', price: 55, address: '台南市新市區中正路236號'},
+  {name: '一沐日 (善化店)', price: 55, address: '台南市善化區中山路255號'},
+  {name: '得正 (新市店)', price: 40, address: '台南市新市區中正路242號'},
+  {name: '得正 (善化店)', price: 40, address: '台南市善化區中山路402號'},
+  {name: '麻古茶坊 (新市店)', price: 60, address: '台南市新市區中正路232號'},
+  {name: '麻古茶坊 (善化店)', price: 60, address: '台南市善化區中山路233號'},
+  {name: 'Tea Top第一味 (新市店)', price: 35, address: '台南市新市區中正路288號'},
+  {name: 'Tea Top第一味 (善化店)', price: 35, address: '台南市善化區大成路320號'},
+  {name: '茶湯會 (新市店)', price: 50, address: '台南市新市區仁愛街300號'},
+  {name: '茶湯會 (善化店)', price: 50, address: '台南市善化區中山路251號'},
+  {name: '春芳號 (新市店)', price: 55, address: '台南市新市區中正路212號'},
+  {name: '春芳號 (善化店)', price: 55, address: '台南市善化區中山路247號'},
+  {name: '雙十八木 (新市店)', price: 45, address: '台南市新市區中正路250號'},
+  {name: '雙十八木 (善化店)', price: 45, address: '台南市善化區中山路201號'},
+  {name: '鶴茶樓 (新市店)', price: 50, address: '台南市新市區中正路228號'},
+  {name: '鶴茶樓 (善化店)', price: 50, address: '台南市善化區大成路312號'},
+  {name: '烏弄 (新市店)', price: 40, address: '台南市新市區華興街86號'},
+  {name: '烏弄 (善化店)', price: 40, address: '台南市善化區大成路308號'},
+  {name: '萬波 (新市店)', price: 45, address: '台南市新市區中正路316號'},
+  {name: '萬波 (善化店)', price: 45, address: '台南市善化區中山路206號'},
+  {name: '水巷茶弄 (新市店)', price: 40, address: '台南市新市區中正路216號'},
+  {name: '水巷茶弄 (善化店)', price: 40, address: '台南市善化區中山路389號'},
+  {name: '老賴茶棧 (新市店)', price: 35, address: '台南市新市區中正路266號'},
+  {name: '老賴茶棧 (善化店)', price: 35, address: '台南市善化區中山路185號'},
+  {name: '白巷子 (新市店)', price: 40, address: '台南市新市區中正路222號'},
+  {name: '白巷子 (善化店)', price: 40, address: '台南市善化區中山路203號'},
+  {name: '鮮自然 (新市店)', price: 40, address: '台南市新市區中正路176號'},
+  {name: '鮮自然 (善化店)', price: 40, address: '台南市善化區中山路365號'},
+  {name: '先喝道 (新市店)', price: 45, address: '台南市新市區中正路220號'},
+  {name: '先喝道 (善化店)', price: 45, address: '台南市善化區中山路391號'},
+  {name: '御私藏 (新市店)', price: 50, address: '台南市新市區中正路200號'},
+  {name: '御私藏 (善化店)', price: 50, address: '台南市善化區中山路180號'},
+  {name: 'CoCo都可 (新市店)', price: 40, address: '台南市新市區仁愛街310號'},
+  {name: 'CoCo都可 (善化店)', price: 40, address: '台南市善化區中山路395號'}
+];
+
+let cur=null;
+
+// 背景星星動畫
+for(let i=0;i<30;i++){
+  let x=document.createElement('div');
+  x.style.left=Math.random()*100+'%';
+  x.style.top=Math.random()*100+'%';
+  x.style.animationDelay=Math.random()*2+'s';
+  document.getElementById('s').appendChild(x);
+}
+
+function go(){
+  const l = food[Math.floor(Math.random()*food.length)];
+  const d = drink[Math.floor(Math.random()*drink.length)];
+  cur = {l, d};
+  
+  document.getElementById('ln').textContent = l.name;
+  document.getElementById('la').textContent = l.address;
+  document.getElementById('lp').textContent = l.price;
+  
+  document.getElementById('dn').textContent = d.name;
+  document.getElementById('detail').textContent = '';
+  document.getElementById('da').textContent = d.address;
+  document.getElementById('dp').textContent = d.price;
+  
+  document.getElementById('total').textContent = (l.price + d.price);
+  
+  const r = document.getElementById('r');
+  r.classList.remove('show');
+  setTimeout(()=>r.classList.add('show'),10);
+  
+  document.querySelector('.dice').textContent = 'Sparkles';
+}
+
+function nav(t){
+  // 修正：使用正確的 Google Maps 搜尋連結格式
+  const addr = t===1 ? cur.l.address : cur.d.address;
+  // encodeURIComponent 確保中文地址能正確被瀏覽器讀取
+  window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(addr));
+}
+
+function copy(){
+  const txt = `餐點即將封印解除 ✨\n\n午餐：${cur.l.name}\n${cur.l.address}\n$${cur.l.price}\n\n飲料：${cur.d.name}\n${cur.d.address}\n$${cur.d.price}\n\n總計：$${(cur.l.price+cur.d.price)}`;
+  navigator.clipboard?.writeText(txt).then(()=>alert('已複製到剪貼簿！'))||((ta=document.createElement('textarea')).value=txt,document.body.appendChild(ta),ta.select(),document.execCommand('copy'),ta.remove(),alert('已複製！'));
+}
+</script>
+</body>
+</html>

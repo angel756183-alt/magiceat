@@ -1,224 +1,1046 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>餐點即將封印解除</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="午餐魔法師">
-  <link rel="manifest" href='data:application/manifest+json,{"name":"午餐魔法師","short_name":"吃啥","icons":[{"src":"magiceat-icon.png","sizes":"192x192","type":"image/png"},{"src":"magiceat-icon.png","sizes":"512x512","type":"image/png"}],"start_url":"lunch.html","display":"standalone","background_color":"#24006d","theme_color":"#8b3dff"}'>
-  <link rel="apple-touch-icon" href="magiceat-icon.png">
-  <style>
-    body{margin:0;font-family:-apple-system;background:linear-gradient(135deg,#24006d,#1e0541);min-height:100dvh;display:flex;justify-content:center;align-items:center;color:#fff}
-    .c{background:rgba(255,255,255,0.97);border-radius:28px;box-shadow:0 25px 70px rgba(0,0,0,0.6);max-width:460px;width:90%;padding:40px 30px;text-align:center;overflow:hidden}
-    h1{font-size:2.2em;margin:0;background:linear-gradient(135deg,#ff9d6c,#bb86fc);-webkit-background-clip:text;color:transparent}
-    .dice{font-size:5.5em;margin:35px 0;animation:f 3s ease-in-out infinite}
-    @keyframes f{50%{transform:translateY(-20px)}}
-    button{background:linear-gradient(135deg,#8b3dff,#c05eff);color:#fff;border:none;padding:20px 40px;font-size:1.4em;border-radius:50px;cursor:pointer;width:100%;margin:15px 0;box-shadow:0 12px 35px rgba(139,61,255,.5)}
-    button:active{transform:scale(.95)}
-    .r{display:none;margin-top:30px;animation:s .6s}.r.show{display:block}
-    @keyframes s{from{opacity:0;transform:translateY(-30px)}}
-    .b{background:linear-gradient(135deg,#d4bbff,#b28ffe);padding:22px;border-radius:22px;margin:15px 0;box-shadow:0 8px 25px rgba(139,61,255,.3)}
-    .n{font-size:1.9em;font-weight:bold;color:#4a148c}
-    .a{font-size:1.05em;color:#6a1b9a;margin:8px 0;word-break:break-all}
-    .p{font-size:1.6em;color:#8b3dff;font-weight:bold}
-    .t{background:linear-gradient(135deg,#7e57c2,#512da8);color:#fff;padding:25px;border-radius:22px;margin-top:25px;font-size:2.4em;font-weight:bold}
-    .g{margin-top:25px;display:grid;gap:12px}
-    .g button{font-size:1.1em;padding:16px;border-radius:18px}
-    .g button:nth-child(3),.g button:nth-child(4){background:#512da8}
-    .s{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1}
-    .s div{position:absolute;width:7px;height:7px;background:#e0d9ff;border-radius:50%;opacity:0;animation:k 2.2s infinite}
-    @keyframes k{50%{opacity:1;transform:scale(1)}}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>午餐魔法封印解除</title>
+    
+    <!-- iOS 主畫面圖示 -->
+    <link rel="apple-touch-icon" id="appleIcon">
+    
+    <!-- iOS 啟動畫面背景色 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="魔法餐點">
+    
+    <!-- Android Chrome -->
+    <meta name="theme-color" content="#667eea">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1em;
+        }
+        
+        .seal-icon {
+            font-size: 5em;
+            margin: 30px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        .recommend-btn {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(255, 216, 155, 0.4);
+            margin: 20px 0;
+            width: 100%;
+        }
+        
+        .recommend-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 216, 155, 0.6);
+        }
+        
+        .recommend-btn:active {
+            transform: translateY(-2px);
+        }
+        
+        .result-container {
+            margin-top: 40px;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .result-container.show {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .result-card h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+        
+        .result-card .item-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+        }
+        
+        .result-card .item-price {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .result-card .item-detail {
+            color: #555;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+        
+        .total-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 20px;
+        }
+        
+        .total-card h3 {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .total-card .total-price {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        
+        .action-buttons {
+            display: grid;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 3px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #f8f9fa;
+            transform: translateY(-3px);
+        }
+        
+        .sparkles {
+            position: fixed;
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        
+        .sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: sparkle 2s infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .update-notice {
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: none;
+            animation: pulse 2s infinite;
+        }
+        
+        .update-notice.show {
+            display: block;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+        
+        .footer {
+            margin-top: 40px;
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .manage-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .manage-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 50px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .modal-header h2 {
+            color: #667eea;
+            font-size: 1.5em;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2em;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+        }
+        
+        .close-btn:hover {
+            color: #ff6b6b;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .add-item-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .add-item-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .store-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .store-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .store-info {
+            flex: 1;
+        }
+        
+        .store-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .store-price {
+            color: #667eea;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .delete-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .delete-btn:hover {
+            background: #ff5252;
+            transform: scale(1.05);
+        }
+        
+        .search-links {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .search-links h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .search-link {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            margin: 5px;
+            border: 2px solid #667eea;
+            transition: all 0.3s;
+        }
+        
+        .search-link:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .seal-icon {
+                font-size: 4em;
+            }
+            
+            .recommend-btn {
+                font-size: 1.1em;
+                padding: 18px 35px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="s" id="s"></div>
-  <div class="c">
-    <h1>餐點即將封印解除</h1>
-    <p style="margin:10px 0 0;font-size:1.1em;color:#bbb">讓魔法師幫你決定今天吃什麼</p>
-    <div class="dice">Sparkles</div>
-    <button onclick="go()">解除封印</button>
+    <div class="sparkles" id="sparkles"></div>
 
-    <div class="r" id="r">
-      <div class="b"><h3>午餐</h3>
-        <div class="n" id="ln"></div>
-        <div class="a" id="la"></div>
-        <div class="p">$<span id="lp"></span></div>
-      </div>
-      <div class="b"><h3>飲料</h3>
-        <div class="n" id="dn"></div>
-        <div id="detail" style="color:#8b3dff;margin:10px 0;font-weight:bold"></div>
-        <div class="a" id="da"></div>
-        <div class="p">$<span id="dp"></span></div>
-      </div>
-      <div class="t">$<span id="total">0</span></div>
-      <div class="g">
-        <button onclick="copy()">複製結果</button>
-        <button style="background:#fff;color:#8b3dff;border:3px solid #8b3dff" onclick="go()">再一次</button>
-        <button onclick="nav(1)">導航午餐</button>
-        <button onclick="nav(2)">導航飲料</button>
-      </div>
+    <div class="container">
+        <div class="update-notice" id="updateNotice">
+            <strong>🔔 魔法師提醒</strong><br>
+            今天是每月更新日！請記得檢查是否有新魔法堂需要加入名單 ✨
+        </div>
+        
+        <div class="header">
+            <h1>🔮 餐點即將封印解除 🔮</h1>
+            <p>不知道吃什麼？讓魔法幫你決定！</p>
+        </div>
+        
+        <div class="seal-icon">🎲</div>
+        
+        <button class="recommend-btn" onclick="unlockSeal()">
+            ✨ 施展魔法 ✨
+        </button>
+        
+        <div class="result-container" id="resultContainer">
+            <div class="result-card">
+                <h3>🍱 餐點魔法顯現</h3>
+                <div class="item-name" id="lunchName"></div>
+                <div class="item-price" id="lunchPrice"></div>
+            </div>
+            
+            <div class="result-card">
+                <h3>🥤 飲料魔法顯現</h3>
+                <div class="item-name" id="drinkName"></div>
+                <div class="item-price" id="drinkPrice"></div>
+            </div>
+            
+            <div class="total-card">
+                <h3>💰 魔法總花費</h3>
+                <div class="total-price" id="totalPrice"></div>
+            </div>
+        </div>
+        
+        <button class="manage-btn" onclick="openManageModal()">
+            ⚙️ 管理魔法堂名單
+        </button>
+        
+        <div class="footer">
+            <p>🌙 月亮微笑時，魔法世界即將開啟 ✨</p>
+        </div>
     </div>
-  </div>
+    
+    <!-- 管理店家 Modal -->
+    <div class="modal" id="manageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔮 管理魔法堂名單</h2>
+                <button class="close-btn" onclick="closeManageModal()">×</button>
+            </div>
+            
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('add')">➕ 新增魔法堂</button>
+                <button class="tab-btn" onclick="switchTab('list')">📋 魔法堂手札</button>
+            </div>
+            
+            <!-- 新增店家 Tab -->
+            <div class="tab-content active" id="addTab">
+                <div class="search-links">
+                    <h4>🔍 尋找新魔法堂</h4>
+                    <a href="https://www.google.com/maps/search/餐廳+新市區+台南" target="_blank" class="search-link">Google Maps 搜尋</a>
+                    <a href="https://www.google.com/maps/search/飲料店+新市區+台南" target="_blank" class="search-link">飲料店搜尋</a>
+                </div>
+                
+                <div class="form-group">
+                    <label>類型</label>
+                    <select id="itemType" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em;">
+                        <option value="lunch">🍱 餐點魔法堂</option>
+                        <option value="drink">🥤 飲料魔法堂</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>魔法堂名稱</label>
+                    <input type="text" id="storeName" placeholder="例：丹丹漢堡">
+                </div>
+                
+                <div class="form-group">
+                    <label>平均價格（元）</label>
+                    <input type="number" id="storePrice" placeholder="例：85">
+                </div>
+                
+                <button class="add-item-btn" onclick="addStore()">
+                    ✨ 加入魔法堂名單
+                </button>
+            </div>
+            
+            <!-- 查看名單 Tab -->
+            <div class="tab-content" id="listTab">
+                <h3 style="color: #667eea; margin-bottom: 15px;">🍱 餐點魔法堂 (<span id="lunchCount">0</span>)</h3>
+                <div class="store-list" id="lunchList"></div>
+                
+                <h3 style="color: #667eea; margin: 25px 0 15px;">🥤 飲料魔法堂 (<span id="drinkCount">0</span>)</h3>
+                <div class="store-list" id="drinkList"></div>
+            </div>
+        </div>
+    </div>
 
-<script>
-/* 修正日誌：
-   1. 嚴格檢查「丹丹漢堡」：確認善化無分店，僅保留新市店。
-   2. 嚴格檢查「肯德基」：確認新市無分店，僅保留善化店。
-   3. 地址全面更新為 Google Maps 驗證後的真實地址。
-   4. 優先順序：新市/善化 > 安南/永康。
-*/
-const food = [
-  // --- 必吃速食 (已驗證分店真實性) ---
-  {name: '丹丹漢堡 (新市店)', price: 95, address: '台南市新市區復興路101號'}, // 善化無分店
-  {name: '麥當勞 (新市中山店)', price: 140, address: '台南市新市區中山路199號'},
-  {name: '麥當勞 (善化光復店)', price: 140, address: '台南市善化區光復路2-2號'},
-  {name: '肯德基 (善化光復餐廳)', price: 145, address: '台南市善化區光復路4號'}, // 新市無分店
-  {name: '必勝客 (新市中正店)', price: 199, address: '台南市新市區中正路234-1號'},
-  {name: '必勝客 (善化中山店)', price: 199, address: '台南市善化區中山路205號'},
-  {name: '達美樂 (新市店)', price: 180, address: '台南市新市區復興路9號'},
-  {name: '達美樂 (善化店)', price: 180, address: '台南市善化區民權路260號'},
-  {name: '漢堡王 (善化店)', price: 130, address: '台南市善化區中正路397號'}, // 較大間
-
-  // --- 知名便當與連鎖店 ---
-  {name: '八方雲集 (新市復興店)', price: 75, address: '台南市新市區復興路66號'},
-  {name: '八方雲集 (善化中山店)', price: 75, address: '台南市善化區中山路236號'},
-  {name: '梁社漢便當 (新市復興店)', price: 95, address: '台南市新市區復興路62號'},
-  {name: '梁社漢便當 (善化光復店)', price: 95, address: '台南市善化區光復路49號'},
-  {name: '好口味廣東粥 (善化店)', price: 80, address: '台南市善化區中正路382-8號'},
-  {name: '粥全 (新市店)', price: 80, address: '台南市新市區仁愛街312號'},
-  {name: '粥全 (善化店)', price: 80, address: '台南市善化區大成路262號'},
-  {name: '港品土魠魚羹 (新市店)', price: 85, address: '台南市新市區中正路272-2號'},
-  {name: '港口土魠魚羹 (善化店)', price: 85, address: '台南市善化區中山路52號'},
-  {name: '新市成功牛排 (新市店)', price: 170, address: '台南市新市區民生路78號'},
-  {name: '新市成功牛排 (善化店)', price: 170, address: '台南市善化區中山路226之2號'},
-  {name: '嘉義火雞肉飯 (新市店)', price: 70, address: '台南市新市區仁愛街306-2號'},
-  {name: '善化嘉義正火雞肉飯', price: 70, address: '台南市善化區中山路122號'},
-  {name: '阿珠姨滷肉飯 (新市店)', price: 65, address: '台南市新市區中正路238號'},
-  {name: '老泉城黃燜雞米飯 (新市店)', price: 130, address: '台南市新市區復興路60號'},
-  {name: '元爵味黃燜雞 (善化店)', price: 140, address: '台南市善化區中山路115號'},
-  {name: '大埔鐵板燒 (新市店)', price: 160, address: '台南市新市區中正路238號'},
-  {name: '大埔鐵板燒 (善化店)', price: 160, address: '台南市善化區民權路260號'},
-  {name: '半畝田北方麵食 (善化店)', price: 120, address: '台南市善化區大成路358號'}, // 新市店目前資料較少，以善化為主
-  {name: '藝鍋物 (新市店)', price: 160, address: '台南市新市區富強路6號'},
-  {name: '藝鍋物 (善化店)', price: 160, address: '台南市善化區光復路50號'},
-  {name: '九鼎林豐 (善化店)', price: 130, address: '台南市善化區中華路172號'},
-  {name: '麻小二 (新市店)', price: 120, address: '台南市新市區華興街120號'},
-  {name: '麻小二 (善化店)', price: 120, address: '台南市善化區大成路325號'},
-
-  // --- 早午餐 (午餐時段有開) ---
-  {name: '晨間廚房 (新市店)', price: 85, address: '台南市新市區仁愛街308號'},
-  {name: '晨間廚房 (善化店)', price: 85, address: '台南市善化區中山路191號'},
-  {name: '拉亞漢堡 (善化蓮潭店)', price: 90, address: '台南市善化區蓮潭北三街266號'},
-  {name: '弘爺漢堡 (善化民權店)', price: 75, address: '台南市善化區民權路43-1號'},
-  {name: '早安美芝城 (善化概念店)', price: 80, address: '台南市新市區龍目井路91號'}, // 雖名為龍目井路但近善化交界
-  {name: '日日夜宵 (新市店)', price: 110, address: '台南市新市區中正路237-7號'},
-
-  // --- 特色餐廳 ---
-  {name: '兒本餐廳 (善化店)', price: 300, address: '台南市善化區中華路17號'},
-  {name: '永世王朝薑母鴨 (善化店)', price: 350, address: '台南市善化區文昌路107巷67號'},
-  {name: '鮨本味 (善化店)', price: 250, address: '台南市善化區民權路260號'},
-
-  // --- 備選：安南與永康區 (名店補充) ---
-  {name: '小公園擔仔麵 (安南店)', price: 65, address: '台南市安南區海佃路一段215號'},
-  {name: '葉家小卷米粉 (永康店)', price: 110, address: '台南市永康區中華路280-53號'},
-  {name: '竹記鴨肉 (永康店)', price: 100, address: '台南市永康區中正北路'},
-  {name: '夏慕尼新香榭鉄板燒 (永康店)', price: 1190, address: '台南市永康區中華路606號'},
-  {name: '聚日式鍋物 (永康中華店)', price: 450, address: '台南市永康區中華路611號'}
-];
-
-const drink = [
-  // --- 熱門手搖飲 (已修正地址) ---
-  {name: '可不可 (新市中正店)', price: 45, address: '台南市新市區中正路230號'},
-  {name: '可不可 (善化中山店)', price: 45, address: '台南市善化區中山路387號'},
-  {name: '龜記 (新市店)', price: 50, address: '台南市新市區中正路192號'},
-  {name: '龜記 (善化店)', price: 50, address: '台南市善化區大成路310號'},
-  {name: '迷客夏 (新市店)', price: 55, address: '台南市新市區銘傳街85號'},
-  {name: '迷客夏 (善化店)', price: 55, address: '台南市善化區中山路237號'},
-  {name: '五桐號 (新市店)', price: 45, address: '台南市新市區中正路182號'},
-  {name: '五桐號 (善化店)', price: 45, address: '台南市善化區中山路383號'},
-  {name: '一沐日 (新市店)', price: 55, address: '台南市新市區中正路236號'},
-  {name: '一沐日 (善化店)', price: 55, address: '台南市善化區中山路255號'},
-  {name: '得正 (新市店)', price: 40, address: '台南市新市區中正路242號'},
-  {name: '得正 (善化店)', price: 40, address: '台南市善化區中山路402號'},
-  {name: '麻古茶坊 (新市店)', price: 60, address: '台南市新市區中正路232號'},
-  {name: '麻古茶坊 (善化店)', price: 60, address: '台南市善化區中山路233號'},
-  {name: 'Tea Top第一味 (新市店)', price: 35, address: '台南市新市區中正路288號'},
-  {name: 'Tea Top第一味 (善化店)', price: 35, address: '台南市善化區大成路320號'},
-  {name: '茶湯會 (新市店)', price: 50, address: '台南市新市區仁愛街300號'},
-  {name: '茶湯會 (善化店)', price: 50, address: '台南市善化區中山路251號'},
-  {name: '春芳號 (新市店)', price: 55, address: '台南市新市區中正路212號'},
-  {name: '春芳號 (善化店)', price: 55, address: '台南市善化區中山路247號'},
-  {name: '雙十八木 (新市店)', price: 45, address: '台南市新市區中正路250號'},
-  {name: '雙十八木 (善化店)', price: 45, address: '台南市善化區中山路201號'},
-  {name: '鶴茶樓 (新市店)', price: 50, address: '台南市新市區中正路228號'},
-  {name: '鶴茶樓 (善化店)', price: 50, address: '台南市善化區大成路312號'},
-  {name: '烏弄 (新市店)', price: 40, address: '台南市新市區華興街86號'},
-  {name: '烏弄 (善化店)', price: 40, address: '台南市善化區大成路308號'},
-  {name: '萬波 (新市店)', price: 45, address: '台南市新市區中正路316號'},
-  {name: '萬波 (善化店)', price: 45, address: '台南市善化區中山路206號'},
-  {name: '水巷茶弄 (新市店)', price: 40, address: '台南市新市區中正路216號'},
-  {name: '水巷茶弄 (善化店)', price: 40, address: '台南市善化區中山路389號'},
-  {name: '老賴茶棧 (新市店)', price: 35, address: '台南市新市區中正路266號'},
-  {name: '老賴茶棧 (善化店)', price: 35, address: '台南市善化區中山路185號'},
-  {name: '白巷子 (新市店)', price: 40, address: '台南市新市區中正路222號'},
-  {name: '白巷子 (善化店)', price: 40, address: '台南市善化區中山路203號'},
-  {name: '鮮自然 (新市店)', price: 40, address: '台南市新市區中正路176號'},
-  {name: '鮮自然 (善化店)', price: 40, address: '台南市善化區中山路365號'},
-  {name: '先喝道 (新市店)', price: 45, address: '台南市新市區中正路220號'},
-  {name: '先喝道 (善化店)', price: 45, address: '台南市善化區中山路391號'},
-  {name: '御私藏 (新市店)', price: 50, address: '台南市新市區中正路200號'},
-  {name: '御私藏 (善化店)', price: 50, address: '台南市善化區中山路180號'},
-  {name: 'CoCo都可 (新市店)', price: 40, address: '台南市新市區仁愛街310號'},
-  {name: 'CoCo都可 (善化店)', price: 40, address: '台南市善化區中山路395號'}
-];
-
-let cur=null;
-
-// 背景星星動畫
-for(let i=0;i<30;i++){
-  let x=document.createElement('div');
-  x.style.left=Math.random()*100+'%';
-  x.style.top=Math.random()*100+'%';
-  x.style.animationDelay=Math.random()*2+'s';
-  document.getElementById('s').appendChild(x);
-}
-
-function go(){
-  const l = food[Math.floor(Math.random()*food.length)];
-  const d = drink[Math.floor(Math.random()*drink.length)];
-  cur = {l, d};
-  
-  document.getElementById('ln').textContent = l.name;
-  document.getElementById('la').textContent = l.address;
-  document.getElementById('lp').textContent = l.price;
-  
-  document.getElementById('dn').textContent = d.name;
-  document.getElementById('detail').textContent = '';
-  document.getElementById('da').textContent = d.address;
-  document.getElementById('dp').textContent = d.price;
-  
-  document.getElementById('total').textContent = (l.price + d.price);
-  
-  const r = document.getElementById('r');
-  r.classList.remove('show');
-  setTimeout(()=>r.classList.add('show'),10);
-  
-  document.querySelector('.dice').textContent = 'Sparkles';
-}
-
-function nav(t){
-  // 修正：使用正確的 Google Maps 搜尋連結格式
-  const addr = t===1 ? cur.l.address : cur.d.address;
-  // encodeURIComponent 確保中文地址能正確被瀏覽器讀取
-  window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(addr));
-}
-
-function copy(){
-  const txt = `餐點即將封印解除 ✨\n\n午餐：${cur.l.name}\n${cur.l.address}\n$${cur.l.price}\n\n飲料：${cur.d.name}\n${cur.d.address}\n$${cur.d.price}\n\n總計：$${(cur.l.price+cur.d.price)}`;
-  navigator.clipboard?.writeText(txt).then(()=>alert('已複製到剪貼簿！'))||((ta=document.createElement('textarea')).value=txt,document.body.appendChild(ta),ta.select(),document.execCommand('copy'),ta.remove(),alert('已複製！'));
-}
-</script>
+    <script>
+        const menuData = {
+            lunch: [
+                {name: '好口味', price: 80},
+                {name: '粥全', price: 75},
+                {name: '麵兒見', price: 85},
+                {name: '八方雲集', price: 70},
+                {name: '必勝客', price: 150},
+                {name: '麥當勞', price: 120},
+                {name: '肯德基', price: 130},
+                {name: '梁社漢便當', price: 85},
+                {name: '港口土魠魚羹', price: 90},
+                {name: '丹丹漢堡', price: 85},
+                {name: '玉禾田越南料理', price: 100},
+                {name: '元爵味黃燜雞', price: 95},
+                {name: '新市成功牛排', price: 150},
+                {name: '小平 正宗火雞肉飯', price: 70},
+                {name: '藝鍋物', price: 200},
+                {name: '九鼎林豐', price: 120},
+                {name: '大埔鐵板燒', price: 150},
+                {name: '漢堡王', price: 120},
+                {name: '達美樂', price: 180},
+                {name: '阿珠姨滷肉飯', price: 60},
+                {name: '八方緣', price: 80},
+                {name: '老泉城黃燜雞米飯（台南新市店）', price: 95},
+                {name: '皇聖食堂', price: 85},
+                {name: '麻小二', price: 90},
+                {name: '晨間廚房', price: 100},
+                {name: '拉亞漢堡', price: 75},
+                {name: '番茄村', price: 85},
+                {name: '弘爺漢堡', price: 70},
+                {name: '甲尚飽', price: 80},
+                {name: '日+早午餐', price: 110},
+                {name: '易百分肉蛋吐司', price: 65},
+                {name: '元氣早午餐', price: 90},
+                {name: '早安美之城', price: 75},
+                {name: '早安山丘', price: 80},
+                {name: '新化阿發排骨大王', price: 85},
+                {name: '半畝田', price: 100},
+                {name: '食光宴鐵板燒料理', price: 150},
+                {name: '善化嘉義正火雞肉飯', price: 70},
+                {name: '超悅涼麵', price: 60},
+                {name: '麵向八方', price: 75}
+            ],
+            drink: [
+                {name: '可不可', price: 45},
+                {name: '龜記', price: 35},
+                {name: '迷客夏', price: 40},
+                {name: '紅茶巴士', price: 30},
+                {name: '春芳號', price: 40},
+                {name: '萬波', price: 45},
+                {name: '青山', price: 50},
+                {name: '鶴茶樓', price: 45},
+                {name: '春宅', price: 40},
+                {name: '烏弄', price: 45},
+                {name: '五桐號', price: 40},
+                {name: '雙十八木', price: 50},
+                {name: '一沐日', price: 45},
+                {name: '得正', price: 35},
+                {name: '茶湯會', price: 40},
+                {name: '大茗', price: 35},
+                {name: '先喝道', price: 40},
+                {name: '水雲朵', price: 45},
+                {name: '老賴', price: 35},
+                {name: 'Tea Top第一味', price: 35},
+                {name: '鮮茶道', price: 35},
+                {name: '角鋪', price: 40},
+                {name: '水巷茶弄', price: 40},
+                {name: '麻古', price: 50},
+                {name: '三分春色', price: 45},
+                {name: '慕春職人', price: 45},
+                {name: '米里米里', price: 40},
+                {name: '穆納', price: 45},
+                {name: '御私藏', price: 40},
+                {name: 'coco都可', price: 35},
+                {name: '銀兩', price: 45},
+                {name: '幕和茶屋', price: 50},
+                {name: 'Nanafru', price: 55},
+                {name: '紅太陽', price: 30},
+                {name: '白巷子', price: 45},
+                {name: '鮮自然', price: 35}
+            ]
+        };
+        
+        let currentRecommendation = null;
+        
+        // 檢查是否為更新日（每月1號或15號）
+        function checkUpdateDay() {
+            const today = new Date();
+            const day = today.getDate();
+            
+            if (day === 1 || day === 15) {
+                document.getElementById('updateNotice').classList.add('show');
+            }
+        }
+        
+        // 隱藏更新提醒
+        function hideUpdateNotice() {
+            document.getElementById('updateNotice').classList.remove('show');
+        }
+        
+        // 創建星星特效
+        function createSparkles() {
+            const sparklesContainer = document.getElementById('sparkles');
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = Math.random() * 2 + 's';
+                sparklesContainer.appendChild(sparkle);
+            }
+        }
+        
+        // 施展魔法（推薦）
+        function unlockSeal() {
+            // 隨機選擇
+            const lunch = menuData.lunch[Math.floor(Math.random() * menuData.lunch.length)];
+            const drink = menuData.drink[Math.floor(Math.random() * menuData.drink.length)];
+            
+            currentRecommendation = {lunch, drink};
+            
+            // 顯示結果
+            document.getElementById('lunchName').textContent = lunch.name;
+            document.getElementById('lunchPrice').textContent = `${lunch.price}`;
+            
+            document.getElementById('drinkName').textContent = drink.name;
+            document.getElementById('drinkPrice').textContent = `${drink.price}`;
+            
+            document.getElementById('totalPrice').textContent = `${lunch.price + drink.price}`;
+            
+            // 顯示結果容器
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.classList.remove('show');
+            setTimeout(() => {
+                resultContainer.classList.add('show');
+            }, 100);
+            
+            // 改變封印圖示
+            document.querySelector('.seal-icon').textContent = '✨';
+            
+            // 隱藏更新提醒
+            hideUpdateNotice();
+        }
+        
+        // 備用複製方法
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert('✅ 魔法結果已複製到剪貼簿！');
+            } catch (err) {
+                alert('❌ 複製失敗，請手動複製');
+            }
+            document.body.removeChild(textarea);
+        }
+        
+        // 備用複製方法
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert('✅ 魔法結果已複製到剪貼簿！');
+            } catch (err) {
+                alert('❌ 複製失敗，請手動複製');
+            }
+            document.body.removeChild(textarea);
+        }
+        
+        // 初始化
+        createSparkles();
+        checkUpdateDay();
+        loadFromStorage();
+        generateAppIcon();
+        
+        // 生成 App 圖示
+        function generateAppIcon() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 180;
+            canvas.height = 180;
+            const ctx = canvas.getContext('2d');
+            
+            // 繪製漸層背景
+            const gradient = ctx.createLinearGradient(0, 0, 180, 180);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.roundRect(0, 0, 180, 180, 40);
+            ctx.fill();
+            
+            // 繪製白色骰子
+            const diceSize = 70;
+            const diceX = 90 - diceSize/2;
+            const diceY = 55;
+            
+            // 骰子陰影
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 3;
+            ctx.shadowOffsetY = 3;
+            
+            // 骰子主體
+            ctx.fillStyle = 'white';
+            ctx.roundRect(diceX, diceY, diceSize, diceSize, 12);
+            ctx.fill();
+            
+            // 清除陰影
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            
+            // 繪製骰子點數（5點）
+            ctx.fillStyle = '#667eea';
+            const dotRadius = 5;
+            const offset = 18;
+            const centerX = diceX + diceSize/2;
+            const centerY = diceY + diceSize/2;
+            
+            // 中心點
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, dotRadius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 四個角的點
+            [[centerX - offset, centerY - offset],
+             [centerX + offset, centerY - offset],
+             [centerX - offset, centerY + offset],
+             [centerX + offset, centerY + offset]].forEach(([x, y]) => {
+                ctx.beginPath();
+                ctx.arc(x, y, dotRadius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // 繪製文字
+            ctx.font = 'bold 20px Arial, "Microsoft JhengHei"';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('魔法餐點', 90, 150);
+            
+            // 設置為 apple-touch-icon
+            const iconLink = document.getElementById('appleIcon');
+            iconLink.href = canvas.toDataURL('image/png');
+        }
+        
+        // CanvasRenderingContext2D.roundRect polyfill
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+                return this;
+            };
+        }
+        
+        // Modal 管理
+        function openManageModal() {
+            document.getElementById('manageModal').classList.add('show');
+            updateStoreList();
+        }
+        
+        function closeManageModal() {
+            document.getElementById('manageModal').classList.remove('show');
+        }
+        
+        function switchTab(tab) {
+            // 切換按鈕狀態
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 切換內容
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tab + 'Tab').classList.add('active');
+            
+            if (tab === 'list') {
+                updateStoreList();
+            }
+        }
+        
+        // 從 storage 載入資料
+        function loadFromStorage() {
+            try {
+                const savedLunch = localStorage.getItem('lunchStores');
+                const savedDrink = localStorage.getItem('drinkStores');
+                
+                if (savedLunch) {
+                    menuData.lunch = JSON.parse(savedLunch);
+                }
+                if (savedDrink) {
+                    menuData.drink = JSON.parse(savedDrink);
+                }
+            } catch (e) {
+                console.log('載入資料失敗');
+            }
+        }
+        
+        // 儲存到 storage
+        function saveToStorage() {
+            try {
+                localStorage.setItem('lunchStores', JSON.stringify(menuData.lunch));
+                localStorage.setItem('drinkStores', JSON.stringify(menuData.drink));
+            } catch (e) {
+                console.log('儲存資料失敗');
+            }
+        }
+        
+        // 新增店家
+        function addStore() {
+            const type = document.getElementById('itemType').value;
+            const name = document.getElementById('storeName').value.trim();
+            const price = parseInt(document.getElementById('storePrice').value);
+            
+            if (!name || !price || price <= 0) {
+                alert('❌ 請填寫完整資料！');
+                return;
+            }
+            
+            // 檢查是否重複
+            const list = type === 'lunch' ? menuData.lunch : menuData.drink;
+            if (list.some(item => item.name === name)) {
+                alert('⚠️ 此店家已存在！');
+                return;
+            }
+            
+            // 新增店家
+            list.push({name, price});
+            list.sort((a, b) => a.name.localeCompare(b.name, 'zh-TW'));
+            
+            saveToStorage();
+            
+            // 清空表單
+            document.getElementById('storeName').value = '';
+            document.getElementById('storePrice').value = '';
+            
+            alert(`✅ 已加入 ${name} 到魔法名單！`);
+            updateStoreList();
+        }
+        
+        // 刪除店家
+        function deleteStore(type, index) {
+            if (!confirm('確定要從魔法名單中移除此店家嗎？')) {
+                return;
+            }
+            
+            if (type === 'lunch') {
+                menuData.lunch.splice(index, 1);
+            } else {
+                menuData.drink.splice(index, 1);
+            }
+            
+            saveToStorage();
+            updateStoreList();
+            alert('✅ 已從魔法名單中移除！');
+        }
+        
+        // 更新店家列表顯示
+        function updateStoreList() {
+            // 午餐列表
+            const lunchList = document.getElementById('lunchList');
+            lunchList.innerHTML = '';
+            menuData.lunch.forEach((store, index) => {
+                const div = document.createElement('div');
+                div.className = 'store-item';
+                div.innerHTML = `
+                    <div class="store-info">
+                        <div class="store-name">${store.name}</div>
+                        <div class="store-price">${store.price}</div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteStore('lunch', ${index})">刪除</button>
+                `;
+                lunchList.appendChild(div);
+            });
+            document.getElementById('lunchCount').textContent = menuData.lunch.length;
+            
+            // 飲料列表
+            const drinkList = document.getElementById('drinkList');
+            drinkList.innerHTML = '';
+            menuData.drink.forEach((store, index) => {
+                const div = document.createElement('div');
+                div.className = 'store-item';
+                div.innerHTML = `
+                    <div class="store-info">
+                        <div class="store-name">${store.name}</div>
+                        <div class="store-price">${store.price}</div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteStore('drink', ${index})">刪除</button>
+                `;
+                drinkList.appendChild(div);
+            });
+            document.getElementById('drinkCount').textContent = menuData.drink.length;
+        }
+        
+        // 點擊 Modal 外部關閉
+        document.getElementById('manageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeManageModal();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 冬季手搖飲情報站 & AI 顧問</title>
+    <!-- 引入 Tailwind CSS 進行快速排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 FontAwesome 圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入 Markdown 解析器 (用於顯示 AI 回應) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .drink-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .drink-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.1rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+        /* Loading Animation */
+        .typing-indicator span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: #f97316;
+            border-radius: 50%;
+            animation: typing 1s infinite ease-in-out;
+            margin: 0 2px;
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="max-w-6xl mx-auto p-6">
+        
+        <!-- Header -->
+        <header class="mb-8 text-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 to-red-500"></div>
+            <h1 class="text-3xl font-bold text-orange-600 mb-2">
+                <i class="fa-solid fa-mug-hot mr-2"></i>2025 冬季手搖飲情報站
+            </h1>
+            <p class="text-gray-500">
+                收錄期間：2025年 11月 - 12月 | 掌握最新聯名與新品資訊
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- 左側：新品快訊 (佔 2/3) -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-700"><i class="fa-solid fa-star text-yellow-500 mr-2"></i>本季重點新品</h2>
+                    <span class="text-sm text-gray-400">更新於 2025.12</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- 迷客夏 -->
+                    <div class="drink-card bg-white p-5 rounded-xl border-l-4 border-green-500 shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg">迷客夏 Milksha</h3>
+                            <span class="tag bg-green-100 text-green-700">花香系</span>
+                        </div>
+                        <p class="text-gray-600 mt-2 text-sm font-bold">主打：桂香系列</p>
+                        <ul class="mt-2 text-sm text-gray-500 list-disc list-inside">
+                            <li>桂香原片青</li>
+                            <li>娜杯桂香拿鐵</li>
+                            <li><span class="text-red-500">新配料：桂香粉粿</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- 麻古 -->
+                    <div class="drink-card bg-white p-5 rounded-xl border-l-4 border-red-500 shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg">麻古茶坊 MACU</h3>
+                            <span class="tag bg-red-100 text-red-700">濃厚系</span>
+                        </div>
+                        <p class="text-gray-600 mt-2 text-sm font-bold">主打：紅萱烏龍系列</p>
+                        <ul class="mt-2 text-sm text-gray-500 list-disc list-inside">
+                            <li>紅萱烏龍 (前韻蜜香/後韻焙火)</li>
+                            <li>紅萱雙Q (波霸+椰果)</li>
+                        </ul>
+                    </div>
+
+                    <!-- 茶湯會 -->
+                    <div class="drink-card bg-white p-5 rounded-xl border-l-4 border-orange-400 shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg">茶湯會 TP TEA</h3>
+                            <span class="tag bg-orange-100 text-orange-700">聯名款</span>
+                        </div>
+                        <p class="text-gray-600 mt-2 text-sm font-bold">聯名：台灣虎航 Tigerair</p>
+                        <ul class="mt-2 text-sm text-gray-500 list-disc list-inside">
+                            <li>香柚鐵觀音 (韓國柚子醬)</li>
+                            <li>香柚翡翠綠</li>
+                            <li>特色：虎將可愛杯身</li>
+                        </ul>
+                    </div>
+
+                    <!-- 龜記 -->
+                    <div class="drink-card bg-white p-5 rounded-xl border-l-4 border-amber-700 shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg">龜記 Guiji</h3>
+                            <span class="tag bg-gray-100 text-gray-700">跨界</span>
+                        </div>
+                        <p class="text-gray-600 mt-2 text-sm font-bold">聯名：lebrewlife 樂步咖啡</p>
+                        <ul class="mt-2 text-sm text-gray-500 list-disc list-inside">
+                            <li>普洱咖啡奶茶</li>
+                            <li>碎銀普洱 + 濃縮咖啡</li>
+                        </ul>
+                    </div>
+                     <!-- ODD ONE OUT -->
+                     <div class="drink-card bg-white p-5 rounded-xl border-l-4 border-purple-500 shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg">ODD ONE OUT</h3>
+                            <span class="tag bg-purple-100 text-purple-700">人氣店</span>
+                        </div>
+                        <p class="text-gray-600 mt-2 text-sm font-bold">主打：開心果系列</p>
+                        <ul class="mt-2 text-sm text-gray-500 list-disc list-inside">
+                            <li>開心果奶蓋</li>
+                            <li>濃郁堅果風味，冬季限定</li>
+                        </ul>
+                    </div>
+                     <!-- 可不可 -->
+                     <div class="drink-card bg-white p-5 rounded-xl border-l-4 border-blue-800 shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg">可不可 KEBUKE</h3>
+                            <span class="tag bg-blue-100 text-blue-800">純茶</span>
+                        </div>
+                        <p class="text-gray-600 mt-2 text-sm font-bold">主打：半熟烏龍</p>
+                        <ul class="mt-2 text-sm text-gray-500 list-disc list-inside">
+                            <li>介於生熟之間的輕焙火</li>
+                            <li>強調溫潤回甘茶感</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右側：AI 工具箱 + 搜尋 (佔 1/3) -->
+            <div class="lg:col-span-1 space-y-6">
+                
+                <!-- ✨ AI 隨身飲料顧問 (新增功能) -->
+                <div class="bg-gradient-to-br from-amber-50 to-orange-100 rounded-2xl p-6 shadow-md border border-orange-200">
+                    <h2 class="text-xl font-bold text-orange-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-2 text-orange-600"></i>AI 隨身顧問
+                    </h2>
+                    
+                    <!-- Feature 1: Mood Selector -->
+                    <div class="mb-6">
+                        <label class="block font-bold text-orange-900 text-sm mb-2">🤔 今天心情/想喝什麼？</label>
+                        <textarea id="moodInput" class="w-full p-3 rounded-lg border border-orange-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white" rows="2" placeholder="例如：今天加班好累想喝甜的、吃完火鍋想解膩、想要有口感的..."></textarea>
+                        
+                        <button onclick="recommendDrink()" class="mt-3 w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold py-2 px-4 rounded-lg hover:from-orange-600 hover:to-amber-600 transition shadow-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-sparkles"></i> AI 幫我選一杯
+                        </button>
+                        
+                        <div id="recommendationResult" class="mt-4 hidden">
+                            <div class="bg-white p-4 rounded-xl text-sm text-gray-700 shadow-sm border border-orange-100">
+                                <div id="recContent" class="prose prose-sm prose-orange"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-orange-200 my-4"></div>
+
+                    <!-- Feature 2: IG Post Generator -->
+                    <div>
+                        <label class="block font-bold text-orange-900 text-sm mb-2">📸 一鍵生成推坑文案</label>
+                        <select id="drinkSelect" class="w-full p-2 rounded-lg border border-orange-200 text-sm mb-2 bg-white">
+                            <option value="迷客夏 桂香拿鐵">迷客夏 - 桂香拿鐵</option>
+                            <option value="麻古 紅萱烏龍">麻古 - 紅萱烏龍</option>
+                            <option value="茶湯會 香柚鐵觀音">茶湯會 - 香柚鐵觀音</option>
+                            <option value="龜記 普洱咖啡奶茶">龜記 - 普洱咖啡奶茶</option>
+                            <option value="ODD ONE OUT 開心果奶蓋">ODD ONE OUT - 開心果奶蓋</option>
+                            <option value="可不可 半熟烏龍">可不可 - 半熟烏龍</option>
+                        </select>
+                        <button onclick="generatePost()" class="w-full bg-white text-orange-600 border border-orange-300 font-bold py-2 px-4 rounded-lg hover:bg-orange-50 transition flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-instagram"></i> 生成 IG 貼文
+                        </button>
+                        
+                        <div id="postResult" class="mt-4 hidden">
+                            <div class="bg-white p-4 rounded-xl text-sm text-gray-700 shadow-sm border border-orange-100 relative group">
+                                <div id="postContent" class="whitespace-pre-wrap font-sans"></div>
+                                <button onclick="copyPost()" class="absolute top-2 right-2 text-gray-400 hover:text-orange-500 p-1 bg-white rounded shadow-sm opacity-0 group-hover:opacity-100 transition">
+                                    <i class="fa-solid fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快速搜尋區 -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                    <h2 class="text-lg font-bold text-gray-700 mb-4"><i class="fa-solid fa-magnifying-glass mr-2"></i>情報任意門</h2>
+                    <div class="space-y-3">
+                        <a href="https://www.google.com/search?q=2025+12月+手搖飲+新品+Dcard" target="_blank" class="block w-full bg-indigo-50 text-indigo-600 font-bold py-2 px-4 rounded-lg text-center hover:bg-indigo-100 transition border border-indigo-100">
+                            <i class="fa-brands fa-google mr-2"></i>Dcard 真實評價
+                        </a>
+                        <a href="https://www.instagram.com/explore/tags/手搖飲新品/" target="_blank" class="block w-full bg-pink-50 text-pink-600 font-bold py-2 px-4 rounded-lg text-center hover:bg-pink-100 transition border border-pink-100">
+                            <i class="fa-brands fa-instagram mr-2"></i>IG #手搖飲新品
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 追蹤技巧 -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                    <h2 class="text-lg font-bold text-gray-700 mb-3"><i class="fa-solid fa-lightbulb text-yellow-500 mr-2"></i>追蹤小技巧</h2>
+                    <ul class="space-y-3">
+                        <li class="flex items-start text-sm text-gray-600">
+                            <span class="bg-blue-100 text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">1</span>
+                            追蹤 WalkerLand 或波波黛莉 IG
+                        </li>
+                        <li class="flex items-start text-sm text-gray-600">
+                            <span class="bg-green-100 text-green-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mr-2 mt-0.5">2</span>
+                            加入官方 LINE 領新品優惠券
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="mt-12 text-center text-gray-400 text-sm">
+            <p>© 2025 手搖飲情報儀表板 | Generated by AI</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // API Configuration
+        const apiKey = ""; // API key is injected at runtime
+
+        // Loading Indicator HTML
+        const loadingHtml = '<div class="flex items-center gap-2 text-orange-500 font-medium"><div class="typing-indicator"><span></span><span></span><span></span></div> <span>AI 正在思考中...</span></div>';
+
+        // Available Drinks Data (Context for AI)
+        const drinksContext = `
+        1. 迷客夏 (花香系): 桂香原片青 (清爽), 娜杯桂香拿鐵 (奶茶), 桂香粉粿 (配料)
+        2. 麻古茶坊 (濃厚系): 紅萱烏龍 (前蜜後焙), 紅萱雙Q (波霸椰果)
+        3. 茶湯會 (酸甜聯名): 香柚鐵觀音 (韓國柚子醬), 香柚翡翠綠
+        4. 龜記 (大人系): 普洱咖啡奶茶 (碎銀普洱+濃縮咖啡)
+        5. ODD ONE OUT (堅果系): 開心果奶蓋 (冬季限定濃郁)
+        6. 可不可 (純茶系): 半熟烏龍 (輕焙火回甘)
+        `;
+
+        /**
+         * Generic Function to Call Gemini API with Exponential Backoff
+         * @param {string} userPrompt - The user's query.
+         * @param {string} systemInstruction - The persona and rules for the model.
+         * @param {number} maxRetries - Maximum number of retries for the API call.
+         * @returns {Promise<string | null>} The generated text or null if API Key is missing.
+         */
+        async function callGeminiAPI(userPrompt, systemInstruction, maxRetries = 3) {
+            if (!apiKey) {
+                console.error("API Key is missing. Returning null.");
+                return null; 
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] }
+            };
+
+            for (let attempt = 0; attempt < maxRetries; attempt++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data.candidates?.[0]?.content?.parts?.[0]?.text || "抱歉，AI 暫時無法回應。";
+                    } else if (response.status === 429 && attempt < maxRetries - 1) {
+                        // Handle rate limit (429 Too Many Requests) with exponential backoff
+                        const delay = Math.pow(2, attempt) * 1000 + Math.random() * 500;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        continue; // Go to next attempt
+                    } else {
+                        // Handle other non-recoverable errors
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                } catch (error) {
+                    // Handle network errors (e.g., fetch failure)
+                    if (attempt < maxRetries - 1) {
+                         const delay = Math.pow(2, attempt) * 1000 + Math.random() * 500;
+                         await new Promise(resolve => setTimeout(resolve, delay));
+                         continue;
+                    }
+                    // If it's the last attempt, break and return failure message
+                    break;
+                }
+            }
+            
+            return "發生連線或服務錯誤，已重試多次但失敗，請稍後再試。";
+        }
+
+        /**
+         * Feature 1: Recommend Drink
+         */
+        async function recommendDrink() {
+            const input = document.getElementById('moodInput').value.trim();
+            const resultDiv = document.getElementById('recommendationResult');
+            const contentDiv = document.getElementById('recContent');
+
+            if (!input) {
+                // Display a custom message for empty input
+                contentDiv.innerHTML = '<p class="text-red-500 font-bold">請先輸入您的心情或口味偏好喔！</p>';
+                resultDiv.classList.remove('hidden');
+                return;
+            }
+
+            // UI State: Loading
+            resultDiv.classList.remove('hidden');
+            contentDiv.innerHTML = loadingHtml;
+
+            const systemPrompt = `
+            你是一位熱情、專業的台灣手搖飲料顧問。
+            請根據用戶的心情或口味偏好，從以下清單中推薦 **1款** 最合適的飲料：
+            ${drinksContext}
+            
+            回應風格：
+            1. 親切、像朋友一樣的口吻 (可使用台灣用語)。
+            2. 使用適量 Emoji ✨。
+            3. 明確指出推薦哪一杯，並解釋為什麼適合他。
+            4. 內容控制在 100 字以內，不要太長。
+            `;
+
+            const response = await callGeminiAPI(input, systemPrompt);
+            
+            // 檢查 API 呼叫結果
+            if (response === null) {
+                contentDiv.innerHTML = '<p class="text-red-500 font-bold">❌ 連線失敗：API 金鑰遺失。請在支援的環境中運行。</p>';
+                return;
+            } else if (response.startsWith("發生連線或服務錯誤")) {
+                 contentDiv.innerHTML = `<p class="text-red-500 font-bold">❌ ${response}</p>`;
+                 return;
+            }
+            
+            // Render Markdown
+            contentDiv.innerHTML = marked.parse(response);
+        }
+
+        /**
+         * Feature 2: Generate IG Post
+         */
+        async function generatePost() {
+            const drink = document.getElementById('drinkSelect').value;
+            const resultDiv = document.getElementById('postResult');
+            const contentDiv = document.getElementById('postContent');
+
+            // UI State: Loading
+            resultDiv.classList.remove('hidden');
+            contentDiv.innerHTML = loadingHtml;
+
+            const systemPrompt = `
+            你是一位擅長經營 Instagram 的美食部落客。
+            請為這款飲料寫一篇吸引人的「推坑文案」：${drink}
+            參考資訊：${drinksContext}
+
+            格式要求：
+            1. 第一行要吸睛 (Hook)。
+            2. 中間描述口感 (想像其味道，例如桂花很香、烏龍回甘)。
+            3. 最後加上 3-5 個相關 Hashtag (#)。
+            4. 風格要活潑、年輕，多用 Emoji。
+            5. 不用太長，適合發限動或貼文。
+            `;
+
+            const response = await callGeminiAPI(`幫我寫一篇關於 ${drink} 的貼文`, systemPrompt);
+            
+            // 檢查 API 呼叫結果
+            if (response === null) {
+                contentDiv.textContent = '❌ 連線失敗：API 金鑰遺失。請在支援的環境中運行。';
+                return;
+            } else if (response.startsWith("發生連線或服務錯誤")) {
+                 contentDiv.textContent = `❌ ${response}`;
+                 return;
+            }
+            
+            contentDiv.textContent = response; // Text content to preserve whitespace formatting
+        }
+
+        function copyPost() {
+            const text = document.getElementById('postContent').textContent;
+            // Use execCommand('copy') for compatibility in environments like iframes
+            if (document.execCommand('copy')) {
+                // Temporary visual feedback instead of alert
+                const copyButton = document.querySelector('#postResult button');
+                copyButton.innerHTML = '<i class="fa-solid fa-check"></i> 已複製';
+                copyButton.classList.add('text-green-500');
+                setTimeout(() => {
+                    copyButton.innerHTML = '<i class="fa-solid fa-copy"></i>';
+                    copyButton.classList.remove('text-green-500');
+                }, 1500);
+            } else {
+                // Fallback for environments where execCommand is blocked
+                // We use console log or non-intrusive UI message if alert() is forbidden.
+                console.log("複製功能受限，請手動複製。"); 
+            }
+        }
+    </script>
+</body>
+</html>

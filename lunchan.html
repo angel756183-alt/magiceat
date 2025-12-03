@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>餐點即將封印解除</title>
     
-    <!-- PWA 相關 -->
+    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#667eea">
     
     <!-- iOS 主畫面圖示 -->
     <link rel="apple-touch-icon" id="appleIcon">
@@ -17,8 +16,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="魔法餐點">
     
+    <!-- Android Chrome -->
+    <meta name="theme-color" content="#667eea">
+    
     <style>
-        /* 原有 CSS 樣式，無變更 */
         * {
             margin: 0;
             padding: 0;
@@ -627,7 +628,6 @@
     </div>
 
     <script>
-        // 原有 script 內容
         const menuData = {
             lunch: [
                 {name: '好口味', price: 80},
@@ -789,6 +789,23 @@
             document.body.removeChild(textarea);
         }
         
+        // 備用複製方法
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert('✅ 魔法結果已複製到剪貼簿！');
+            } catch (err) {
+                alert('❌ 複製失敗，請手動複製');
+            }
+            document.body.removeChild(textarea);
+        }
+        
         // 初始化
         createSparkles();
         checkUpdateDay();
@@ -798,22 +815,22 @@
         // 生成 App 圖示
         function generateAppIcon() {
             const canvas = document.createElement('canvas');
-            canvas.width = 192;
-            canvas.height = 192;
+            canvas.width = 180;
+            canvas.height = 180;
             const ctx = canvas.getContext('2d');
             
             // 繪製漸層背景
-            const gradient = ctx.createLinearGradient(0, 0, 192, 192);
+            const gradient = ctx.createLinearGradient(0, 0, 180, 180);
             gradient.addColorStop(0, '#667eea');
             gradient.addColorStop(1, '#764ba2');
             ctx.fillStyle = gradient;
-            ctx.roundRect(0, 0, 192, 192, 40);
+            ctx.roundRect(0, 0, 180, 180, 40);
             ctx.fill();
             
             // 繪製白色骰子
-            const diceSize = 80;
-            const diceX = 96 - diceSize/2;
-            const diceY = 60;
+            const diceSize = 70;
+            const diceX = 90 - diceSize/2;
+            const diceY = 55;
             
             // 骰子陰影
             ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
@@ -834,8 +851,8 @@
             
             // 繪製骰子點數（5點）
             ctx.fillStyle = '#667eea';
-            const dotRadius = 6;
-            const offset = 20;
+            const dotRadius = 5;
+            const offset = 18;
             const centerX = diceX + diceSize/2;
             const centerY = diceY + diceSize/2;
             
@@ -859,17 +876,11 @@
             ctx.fillStyle = 'white';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('魔法餐點', 96, 160);
+            ctx.fillText('魔法餐點', 90, 150);
             
             // 設置為 apple-touch-icon
             const iconLink = document.getElementById('appleIcon');
             iconLink.href = canvas.toDataURL('image/png');
-            
-            // 額外：儲存為 icon.png（需手動下載或在伺服器生成）
-            const link = document.createElement('a');
-            link.download = 'icon.png';
-            link.href = canvas.toDataURL('image/png');
-            // link.click(); // 註解掉，測試時可解除註解下載
         }
         
         // CanvasRenderingContext2D.roundRect polyfill
@@ -1034,12 +1045,12 @@
             }
         });
         
-        // PWA Service Worker 註冊
+        // 註冊 Service Worker (如果想完整 PWA)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
                     .then(reg => console.log('Service Worker registered'))
-                    .catch(err => console.log('Service Worker registration failed:', err));
+                    .catch(err => console.log('Registration failed', err));
             });
         }
     </script>

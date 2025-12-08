@@ -15,7 +15,7 @@
     <meta name="apple-mobile-web-app-title" content="魔法餐點">
     
     <style>
-        /* ... (樣式保持不變，您可以隨時按需求修改網頁本身的顏色) ... */
+        /* 網頁樣式保持不變 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Microsoft JhengHei', Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
         .container { background: white; border-radius: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 500px; width: 100%; padding: 40px 30px; text-align: center; }
@@ -112,7 +112,7 @@
     <div class="modal" id="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>🔮 管理魔法堂名單</h2>
+                <h2>🔮管理魔法堂名單🔮</h2>
                 <button class="close-btn" onclick="closeModal()">×</button>
             </div>
             
@@ -157,53 +157,86 @@
 
     <script>
         // ==========================================
-        //  PWA 核心：動態生成 Tiffany 綠圖示
+        //  PWA 核心：動態生成客製化圖示
         // ==========================================
         function initPWA() {
-            // 1. 繪製圖示
             const canvas = document.createElement('canvas');
             canvas.width = 512;
             canvas.height = 512;
             const ctx = canvas.getContext('2d');
 
-            // --- 修改重點：背景改為 Tiffany 綠漸層 ---
+            // 1. 背景：Tiffany 綠漸層
             const g = ctx.createLinearGradient(0, 0, 512, 512);
-            // 使用與卡片設計一致的淺 Tiffany 綠，漸變到較深的湖水綠
             g.addColorStop(0, '#a8edea'); 
             g.addColorStop(1, '#3fb0ac'); 
             ctx.fillStyle = g;
             ctx.fillRect(0, 0, 512, 512);
-            // --------------------------------------
+
+            // === 開始繪製客製化骰子 ===
             
-            // 骰子裝飾 (半透明白色)
-            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            // 骰子參數設定
+            const diceSize = 340; // 骰子大小
+            const cornerRadius = 70; // 圓角大小
+            const startX = (512 - diceSize) / 2; // 86
+            const startY = (512 - diceSize) / 2; // 86
+
+            // 2. 畫白色骰子本體 (圓角矩形)
+            ctx.fillStyle = 'white';
             ctx.beginPath();
-            ctx.arc(256, 256, 200, 0, Math.PI * 2);
+            ctx.moveTo(startX + cornerRadius, startY);
+            ctx.lineTo(startX + diceSize - cornerRadius, startY);
+            ctx.quadraticCurveTo(startX + diceSize, startY, startX + diceSize, startY + cornerRadius);
+            ctx.lineTo(startX + diceSize, startY + diceSize - cornerRadius);
+            ctx.quadraticCurveTo(startX + diceSize, startY + diceSize, startX + diceSize - cornerRadius, startY + diceSize);
+            ctx.lineTo(startX + cornerRadius, startY + diceSize);
+            ctx.quadraticCurveTo(startX, startY + diceSize, startX, startY + diceSize - cornerRadius);
+            ctx.lineTo(startX, startY + cornerRadius);
+            ctx.quadraticCurveTo(startX, startY, startX + cornerRadius, startY);
+            ctx.closePath();
             ctx.fill();
 
-            // 文字與Emoji (白色)
-            ctx.fillStyle = 'white';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.font = '180px Arial';
-            ctx.fillText('🎲', 256, 200);
-            ctx.font = 'bold 60px "Microsoft JhengHei", Arial';
+            // 3. 畫 5 個 Tiffany 綠圓點
+            ctx.fillStyle = '#3fb0ac'; // 使用較深的 Tiffany 綠
+            const dotRadius = 32; // 點的大小
+            const padding = 85; // 點距離骰子邊緣的距離
+            
+            const leftX = startX + padding;
+            const rightX = startX + diceSize - padding;
+            const topY = startY + padding;
+            const bottomY = startY + diceSize - padding;
+            const centerX = 256;
+            const centerY = 256;
 
-            // 取得圖片資料 URL
+            // 5點的座標位置
+            const dots = [
+                [leftX, topY],     // 左上
+                [rightX, topY],    // 右上
+                [centerX, centerY],// 中間
+                [leftX, bottomY],  // 左下
+                [rightX, bottomY]  // 右下
+            ];
+
+            dots.forEach(pos => {
+                ctx.beginPath();
+                ctx.arc(pos[0], pos[1], dotRadius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // (已移除文字繪製的部分)
+
+            // === 繪製結束 ===
+
             const iconUrl = canvas.toDataURL('image/png');
-
-            // 2. 設定 HTML Head 的圖示連結
             document.getElementById('appleIcon').href = iconUrl;
             document.getElementById('favIcon').href = iconUrl;
 
-            // 3. 動態建立 Manifest (把主題色也改為 Tiffany 綠)
             const manifest = {
-                "name": "魔幻舞台",
-                "short_name": "魔幻舞台",
+                "name": "魔法餐點",
+                "short_name": "魔法餐點",
                 "start_url": ".",
                 "display": "standalone",
-                "theme_color": "#3fb0ac", // 修改這裡
-                "background_color": "#3fb0ac", // 修改這裡
+                "theme_color": "#3fb0ac",
+                "background_color": "#3fb0ac",
                 "icons": [
                     {
                         "src": iconUrl,
@@ -218,7 +251,6 @@
             const manifestURL = URL.createObjectURL(blob);
             document.getElementById('manifestLink').href = manifestURL;
 
-            // 4. 註冊 Service Worker
             if ('serviceWorker' in navigator) {
                 const swCode = `
                     self.addEventListener('install', e => e.waitUntil(caches.open('pwa-store').then(c => c.addAll(['./']))));
@@ -236,7 +268,6 @@
         }
 
         initPWA();
-
 
         // ==========================================
         //  應用程式邏輯 (保持不變)

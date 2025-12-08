@@ -1,127 +1,708 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>餐點即將封印解除</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>餐點封印解除</title>
+    
+    <link rel="manifest" href="manifest.json">
+    
+    <link rel="apple-touch-icon" id="appIcon">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="魔法餐點">
+    <meta name="theme-color" content="#667eea">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<!-- PWA 基本設定 -->
-<meta name="theme-color" content="#667eea">
-<link rel="apple-touch-icon" id="appIcon">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="魔法餐點">
-
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-    font-family: "Microsoft JhengHei", Arial, sans-serif;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.card {
-    background: white;
-    width: 100%;
-    max-width: 420px;
-    border-radius: 30px;
-    box-shadow: 0 20px 60px rgba(0,0,0,.3);
-    padding: 30px 25px 35px;
-    text-align: center;
-}
-
-/* ✅ 強制同一行標題 */
-h1 {
-    color: #667eea;
-    font-size: (2em, 5vw);
-    margin-bottom: 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-      width: 100%;
-    letter-spacing: -0.05em;
-}
-
-.subtitle {
-    color: #666;
-    margin-bottom: 25px;
-    font-size: 1em;
-}
-
-.dice {
-    font-size: 90px;
-    margin: 10px 0 25px;
-}
-
-.magic-btn {
-    width: 100%;
-    padding: 18px 0;
-    border: none;
-    border-radius: 50px;
-    font-size: 1.2em;
-    font-weight: bold;
-    color: white;
-    background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
-    cursor: pointer;
-    margin-bottom: 18px;
-}
-
-.manage-btn {
-    width: 100%;
-    padding: 14px 0;
-    border: none;
-    border-radius: 20px;
-    font-size: 1em;
-    font-weight: bold;
-    color: white;
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-    cursor: pointer;
-}
-
-.footer {
-    margin-top: 25px;
-    font-size: 0.9em;
-    color: #999;
-}
-</style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .area-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .area-btn {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 15px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .area-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .dice {
+            font-size: 5em;
+            margin: 30px 0;
+        }
+        
+        .main-btn {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(255, 216, 155, 0.4);
+            transition: all 0.3s;
+        }
+        
+        .main-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 216, 155, 0.6);
+        }
+        
+        .result {
+            margin-top: 40px;
+            display: none;
+        }
+        
+        .result.show {
+            display: block;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .card h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+        
+        .name {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+        }
+        
+        .price {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .total {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 20px;
+        }
+        
+        .total-price {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        
+        .manage-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .manage-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .footer {
+            margin-top: 40px;
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 50px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .modal-header h2 {
+            color: #667eea;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2em;
+            color: #999;
+            cursor: pointer;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+        
+        .add-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .store-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .store-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .store-name {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .store-price {
+            color: #667eea;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .delete-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <h1>🔮 餐點即將封印解除 🔮</h1>
+        <p class="subtitle">不知道吃什麼？讓魔法幫你決定！</p>
+        
+        <div class="area-buttons">
+            <button class="area-btn active" onclick="selectArea('local')">
+                🏠 善化新市區施展魔法
+            </button>
+            <button class="area-btn" onclick="selectArea('other')">
+                🌍 異地冒險去
+            </button>
+        </div>
+        
+        <div class="dice">🎲</div>
+        
+        <button class="main-btn" onclick="cast()">
+            ✨ 施展魔法 ✨
+        </button>
+        
+        <div class="result" id="result">
+            <div class="card">
+                <h3>🍱 餐點魔法顯現</h3>
+                <div class="name" id="lunchName"></div>
+                <div class="price" id="lunchPrice"></div>
+            </div>
+            
+            <div class="card">
+                <h3>🥤 飲料魔法顯現</h3>
+                <div class="name" id="drinkName"></div>
+                <div class="price" id="drinkPrice"></div>
+            </div>
+            
+            <div class="total">
+                <h3>💰 魔法總花費</h3>
+                <div class="total-price" id="total"></div>
+            </div>
+        </div>
+        
+        <button class="manage-btn" onclick="openModal()">
+            ⚙️ 管理魔法堂名單
+        </button>
+        
+        <div class="footer">
+            <p>🌙 月亮微笑時,魔法世界即將開啟 ✨</p>
+        </div>
+    </div>
+    
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔮 管理魔法堂名單</h2>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('add')">➕ 新增魔法堂</button>
+                <button class="tab" onclick="switchTab('list')">📋 魔法堂手札</button>
+            </div>
+            
+            <div class="tab-content active" id="addTab">
+                <div class="form-group">
+                    <label>類型</label>
+                    <select id="type">
+                        <option value="lunch">🍱 餐點魔法堂</option>
+                        <option value="drink">🥤 飲料魔法堂</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>魔法堂名稱</label>
+                    <input type="text" id="storeName" placeholder="例：丹丹漢堡">
+                </div>
+                
+                <div class="form-group">
+                    <label>平均價格（元）</label>
+                    <input type="number" id="storePrice" placeholder="例：85">
+                </div>
+                
+                <button class="add-btn" onclick="addStore()">
+                    ✨ 加入魔法堂名單
+                </button>
+            </div>
+            
+            <div class="tab-content" id="listTab">
+                <h3 style="color: #667eea; margin-bottom: 15px;">🍱 餐點魔法堂 (<span id="lunchCount">0</span>)</h3>
+                <div class="store-list" id="lunchList"></div>
+                
+                <h3 style="color: #667eea; margin: 25px 0 15px;">🥤 飲料魔法堂 (<span id="drinkCount">0</span>)</h3>
+                <div class="store-list" id="drinkList"></div>
+            </div>
+        </div>
+    </div>
 
-<div class="card">
-    <h1>🔮 餐點即將封印解除 🔮</h1>
-    <div class="subtitle">不知道吃什麼？讓魔法幫你決定！</div>
-    <div class="dice">🎲</div>
-    <button class="magic-btn">✨ 施展魔法 ✨</button>
-    <button class="manage-btn">⚙️ 管理魔法堂名單</button>
-    <div class="footer">🌙 月亮微笑時，魔法世界即將開放 ✨</div>
-</div>
-
-<script>
-function genIcon(){
-    var c=document.createElement("canvas");
-    c.width=180; c.height=180;
-    var ctx=c.getContext("2d");
-    var g=ctx.createLinearGradient(0,0,180,180);
-    g.addColorStop(0,"#667eea");
-    g.addColorStop(1,"#764ba2");
-    ctx.fillStyle=g;
-    ctx.fillRect(0,0,180,180);
-    ctx.fillStyle="white";
-    ctx.font="bold 80px Arial";
-    ctx.textAlign="center";
-    ctx.textBaseline="middle";
-    ctx.fillText("🎲",90,90);
-    ctx.font="bold 20px Arial";
-    ctx.fillText("魔法餐點",90,150);
-    document.getElementById("appIcon").href=c.toDataURL();
-}
-genIcon();
-</script>
-
+    <script>
+        // 資料 (已確認保留您原來的內容，未被修改)
+        const data = {
+            local: {
+                lunch: [
+                    {name: '好口味粥', price: 80},
+                    {name: '粥全', price: 75},
+                    {name: '麵兒見', price: 85},
+                    {name: '八方雲集', price: 70},
+                    {name: '必勝客', price: 150},
+                    {name: '麥當勞', price: 120},
+                    {name: '肯德基', price: 130},
+                    {name: '梁社漢便當', price: 85},
+                    {name: '港口土魠魚羹', price: 90},
+                    {name: '丹丹漢堡', price: 85},
+                    {name: '玉禾田越南料理', price: 100},
+                    {name: '元爵味黃燜雞', price: 95},
+                    {name: '新市成功牛排', price: 150},
+                    {name: '小平 正宗火雞肉飯', price: 70},
+                    {name: '藝鍋物', price: 200},
+                    {name: '九鼎林豐', price: 120},
+                    {name: '大埔鐵板燒', price: 150},
+                    {name: '漢堡王', price: 120},
+                    {name: '達美樂', price: 180},
+                    {name: '阿珠姨滷肉飯', price: 60},
+                    {name: '八方緣', price: 80},
+                    {name: '老泉城黃燜雞米飯', price: 95},
+                    {name: '皇聖食堂', price: 85},
+                    {name: '麻小二', price: 90}
+                ],
+                drink: [
+                    {name: '可不可', price: 45},
+                    {name: '龜記', price: 35},
+                    {name: '迷客夏', price: 40},
+                    {name: '紅茶巴士', price: 30},
+                    {name: '春芳號', price: 40},
+                    {name: '萬波', price: 45},
+                    {name: '青山', price: 50},
+                    {name: '鶴茶樓', price: 45},
+                    {name: '春宅', price: 40},
+                    {name: '烏弄', price: 45},
+                    {name: '五桐號', price: 40},
+                    {name: '雙十八木', price: 50},
+                    {name: '一沐日', price: 45},
+                    {name: '得正', price: 35},
+                    {name: '茶湯會', price: 40},
+                    {name: '大茗', price: 35},
+                    {name: '先喝道', price: 40},
+                    {name: '水雲朵', price: 45},
+                    {name: '老賴', price: 35},
+                    {name: 'Tea Top第一味', price: 35},
+                    {name: '鮮茶道', price: 35},
+                    {name: '角鋪', price: 40},
+                    {name: '水巷茶弄', price: 40},
+                    {name: '麻古', price: 50},
+                    {name: '三分春色', price: 45},
+                    {name: '慕春職人', price: 45},
+                    {name: '米里米里', price: 40},
+                    {name: '穆納', price: 45},
+                    {name: '御私藏', price: 40},
+                    {name: 'coco都可', price: 35},
+                    {name: '銀兩', price: 45},
+                    {name: '幕和茶屋', price: 50},
+                    {name: 'Nanafru', price: 55},
+                    {name: '紅太陽', price: 30},
+                    {name: '白巷子', price: 45},
+                    {name: '鮮自然', price: 35}
+                ]
+            },
+            other: {
+                lunch: [
+                    {name: '王品牛排 (永康店)', price: 1200},
+                    {name: '陶板屋 (永康店)', price: 600},
+                    {name: '西堤牛排 (東區店)', price: 800},
+                    {name: '夏慕尼 (中西區店)', price: 900},
+                    {name: '石二鍋 (多分店)', price: 350},
+                    {name: '藏壽司 (永康店)', price: 200},
+                    {name: '壽司郎 (安平店)', price: 180},
+                    {name: '丸龜製麵 (南紡店)', price: 150},
+                    {name: '阿憨鹹粥', price: 100},
+                    {name: '文章牛肉湯', price: 180},
+                    {name: '阿村牛肉湯', price: 150},
+                    {name: '周氏蝦卷', price: 120},
+                    {name: '富盛號碗粿', price: 50},
+                    {name: '葉家小卷米粉', price: 70},
+                    {name: '同記安平豆花', price: 50},
+                    {name: '蜷尾家散步甜點', price: 100},
+                    {name: '矮仔成蝦仁飯', price: 80},
+                    {name: '集品蝦仁飯', price: 80},
+                    {name: '福記肉圓', price: 50},
+                    {name: '阿明豬心', price: 150},
+                    {name: '阿龍香腸熟肉', price: 60},
+                    {name: '莉莉水果店', price: 120}
+                ],
+                drink: [
+                    {name: '蜷尾家冰茶', price: 60},
+                    {name: '春芳號', price: 40},
+                    {name: '青蛙黑蛋奶', price: 60},
+                    {name: '杜芳子古味茶鋪', price: 100},
+                    {name: '南泉冰菓室', price: 40},
+                    {name: '椿之味', price: 60},
+                    {name: '白巷子 (安平店)', price: 45},
+                    {name: '總裁點點頭', price: 50},
+                    {name: '無飲', price: 55},
+                    {name: '鮮自然', price: 40},
+                    {name: '久御賞理想', price: 45},
+                    {name: '波哥茶飲', price: 35},
+                    {name: '宣福居', price: 50},
+                    {name: '茶來茶去', price: 30},
+                    {name: '茶的魔手', price: 45},
+                    {name: '魔力牛牛排館飲料', price: 50},
+                    {name: '藏壽司飲料', price: 40},
+                    {name: '壽司郎飲料', price: 35},
+                    {name: '丸龜製麵飲料', price: 30},
+                    {name: '雙全紅茶', price: 40},
+                    {name: '青山茶行', price: 50},
+                    {name: '藥師紅茶', price: 45},
+                    {name: '仙豆龍Q奶', price: 60},
+                    {name: '毛豆Q粿', price: 35},
+                    {name: '糯夫米糕梅子綠', price: 50}
+                ]
+            }
+        };
+        
+        let area = 'local';
+        
+        // 選擇區域
+        function selectArea(a) {
+            area = a;
+            document.querySelectorAll('.area-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('result').classList.remove('show');
+            document.querySelector('.dice').textContent = '🎲';
+        }
+        
+        // 施展魔法
+        function cast() {
+            const lunch = data[area].lunch[Math.floor(Math.random() * data[area].lunch.length)];
+            const drink = data[area].drink[Math.floor(Math.random() * data[area].drink.length)];
+            
+            document.getElementById('lunchName').textContent = lunch.name;
+            document.getElementById('lunchPrice').textContent = '$' + lunch.price;
+            document.getElementById('drinkName').textContent = drink.name;
+            document.getElementById('drinkPrice').textContent = '$' + drink.price;
+            document.getElementById('total').textContent = '$' + (lunch.price + drink.price);
+            
+            document.getElementById('result').classList.add('show');
+            document.querySelector('.dice').textContent = '✨';
+        }
+        
+        // Modal
+        function openModal() {
+            document.getElementById('modal').classList.add('show');
+            updateList();
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+        
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tab + 'Tab').classList.add('active');
+            if (tab === 'list') updateList();
+        }
+        
+        // 新增魔法堂
+        function addStore() {
+            const type = document.getElementById('type').value;
+            const name = document.getElementById('storeName').value.trim();
+            const price = parseInt(document.getElementById('storePrice').value);
+            
+            if (!name || !price) {
+                alert('❌ 請填寫完整資料！');
+                return;
+            }
+            
+            // 由於 data 變數在全域，直接修改它
+            data[area][type].push({name, price});
+            data[area][type].sort((a, b) => a.name.localeCompare(b.name, 'zh-TW'));
+            
+            document.getElementById('storeName').value = '';
+            document.getElementById('storePrice').value = '';
+            
+            alert('✅ 已加入 ' + name + ' 到魔法堂名單！');
+            updateList();
+        }
+        
+        // 刪除魔法堂
+        function deleteStore(type, idx) {
+            if (!confirm('確定要移除此魔法堂嗎？')) return;
+            data[area][type].splice(idx, 1);
+            updateList();
+            alert('✅ 已移除！');
+        }
+        
+        // 更新列表
+        function updateList() {
+            const lunchList = document.getElementById('lunchList');
+            const drinkList = document.getElementById('drinkList');
+            
+            lunchList.innerHTML = '';
+            data[area].lunch.forEach((s, i) => {
+                lunchList.innerHTML += `
+                    <div class="store-item">
+                        <div>
+                            <div class="store-name">${s.name}</div>
+                            <div class="store-price">$${s.price}</div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteStore('lunch', ${i})">刪除</button>
+                    </div>
+                `;
+            });
+            document.getElementById('lunchCount').textContent = data[area].lunch.length;
+            
+            drinkList.innerHTML = '';
+            data[area].drink.forEach((s, i) => {
+                drinkList.innerHTML += `
+                    <div class="store-item">
+                        <div>
+                            <div class="store-name">${s.name}</div>
+                            <div class="store-price">$${s.price}</div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteStore('drink', ${i})">刪除</button>
+                    </div>
+                `;
+            });
+            document.getElementById('drinkCount').textContent = data[area].drink.length;
+        }
+        
+        // Modal 外部點擊關閉
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        
+        // 生成圖示
+        function genIcon() {
+            const c = document.createElement('canvas');
+            c.width = 180;
+            c.height = 180;
+            const ctx = c.getContext('2d');
+            
+            const g = ctx.createLinearGradient(0, 0, 180, 180);
+            g.addColorStop(0, '#667eea');
+            g.addColorStop(1, '#764ba2');
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, 180, 180);
+            
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 80px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🎲', 90, 90);
+            
+            ctx.font = 'bold 20px Arial';
+            ctx.fillText('魔法餐點', 90, 150);
+            
+            document.getElementById('appIcon').href = c.toDataURL();
+        }
+        
+        genIcon();
+        
+        // 🎯 PWA 核心功能：註冊 Service Worker 實現離線和安裝功能
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // 假設您的 Service Worker 檔案名為 sw.js
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.error('Service Worker registration failed:', err));
+            });
+        }
+    </script>
 </body>
 </html>

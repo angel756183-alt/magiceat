@@ -8,13 +8,14 @@
     <link rel="manifest" id="manifestLink">
     <link rel="apple-touch-icon" id="appleIcon">
     <link rel="icon" id="favIcon">
-    <meta name="theme-color" content="#667eea">
+    <meta name="theme-color" content="#3fb0ac">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="魔法餐點">
     
     <style>
+        /* ... (樣式保持不變，您可以隨時按需求修改網頁本身的顏色) ... */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Microsoft JhengHei', Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
         .container { background: white; border-radius: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 500px; width: 100%; padding: 40px 30px; text-align: center; }
@@ -156,7 +157,7 @@
 
     <script>
         // ==========================================
-        //  PWA 核心：動態生成圖示與 Manifest (免圖檔)
+        //  PWA 核心：動態生成 Tiffany 綠圖示
         // ==========================================
         function initPWA() {
             // 1. 繪製圖示
@@ -165,20 +166,22 @@
             canvas.height = 512;
             const ctx = canvas.getContext('2d');
 
-            // 背景漸層
+            // --- 修改重點：背景改為 Tiffany 綠漸層 ---
             const g = ctx.createLinearGradient(0, 0, 512, 512);
-            g.addColorStop(0, '#667eea');
-            g.addColorStop(1, '#764ba2');
+            // 使用與卡片設計一致的淺 Tiffany 綠，漸變到較深的湖水綠
+            g.addColorStop(0, '#a8edea'); 
+            g.addColorStop(1, '#3fb0ac'); 
             ctx.fillStyle = g;
             ctx.fillRect(0, 0, 512, 512);
+            // --------------------------------------
             
-            // 骰子裝飾
+            // 骰子裝飾 (半透明白色)
             ctx.fillStyle = 'rgba(255,255,255,0.2)';
             ctx.beginPath();
             ctx.arc(256, 256, 200, 0, Math.PI * 2);
             ctx.fill();
 
-            // 文字與Emoji
+            // 文字與Emoji (白色)
             ctx.fillStyle = 'white';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -194,14 +197,14 @@
             document.getElementById('appleIcon').href = iconUrl;
             document.getElementById('favIcon').href = iconUrl;
 
-            // 3. 動態建立 Manifest (安卓安裝關鍵)
+            // 3. 動態建立 Manifest (把主題色也改為 Tiffany 綠)
             const manifest = {
                 "name": "魔法餐點",
                 "short_name": "魔法餐",
                 "start_url": ".",
                 "display": "standalone",
-                "theme_color": "#667eea",
-                "background_color": "#667eea",
+                "theme_color": "#3fb0ac", // 修改這裡
+                "background_color": "#3fb0ac", // 修改這裡
                 "icons": [
                     {
                         "src": iconUrl,
@@ -211,15 +214,13 @@
                 ]
             };
 
-            // 將 Manifest 物件轉為 Blob URL
             const stringManifest = JSON.stringify(manifest);
             const blob = new Blob([stringManifest], {type: 'application/json'});
             const manifestURL = URL.createObjectURL(blob);
             document.getElementById('manifestLink').href = manifestURL;
 
-            // 4. 註冊 Service Worker (建立離線快取能力，符合 PWA 標準)
+            // 4. 註冊 Service Worker
             if ('serviceWorker' in navigator) {
-                // 這裡我們也動態建立 SW 程式碼，不用額外檔案
                 const swCode = `
                     self.addEventListener('install', e => e.waitUntil(caches.open('pwa-store').then(c => c.addAll(['./']))));
                     self.addEventListener('fetch', e => e.respondWith(
@@ -235,12 +236,11 @@
             }
         }
 
-        // 執行 PWA 初始化
         initPWA();
 
 
         // ==========================================
-        //  原本的應用程式邏輯
+        //  應用程式邏輯 (保持不變)
         // ==========================================
         const data = {
             local: {
